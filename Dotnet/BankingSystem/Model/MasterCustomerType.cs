@@ -6,5 +6,5 @@ public class MasterCustomerType
 {
     [Key]
     public int CustomerTypeId { get; set; }
-    public string? CustomerType{ get; set;}
+    public required string CustomerType{ get; set;}
 }

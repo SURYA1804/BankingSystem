@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string connectionString = builder.Configuration.GetConnectionString("SqliteConnection");
 builder.Services.Configure<EmailCredentialsDTO>(
     builder.Configuration.GetSection("EmailCredentials"));
 
@@ -26,7 +26,22 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddDbContext<MyAppDbContext>(x => x.UseSqlServer(connectionString));
+var useSqlite = builder.Configuration.GetValue<bool>("UseSqlite");
+
+
+if (useSqlite)
+{
+    builder.Services.AddDbContext<MyAppDbContext, SqliteDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
+}
+else
+{
+    builder.Services.AddDbContext<MyAppDbContext, SqlServerDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+
+
+
 builder.Services.AddScoped<ICustomerTypeService, CustomerTypeService>();
 builder.Services.AddScoped<IUserRolesService, UserRolesService>();
 builder.Services.AddScoped<IUserService, UserService>();

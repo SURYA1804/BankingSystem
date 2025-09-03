@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using MyDbContext;
 using System.Text;
 using Microsoft.Extensions.Options;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Service;
 
@@ -17,14 +18,21 @@ public class UserService : IUserService
 {
     private readonly MyAppDbContext context;
     private readonly EmailCredentialsDTO emailCredentials;
+    private SmtpClient smpt;
     public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions)
     {
         this.context = context;
         this.emailCredentials = emailOptions.Value;
-         if (string.IsNullOrEmpty(emailCredentials.Email) || string.IsNullOrEmpty(emailCredentials.Password))
+        if (string.IsNullOrEmpty(emailCredentials.Email) || string.IsNullOrEmpty(emailCredentials.Password))
         {
             throw new ArgumentException("EmailCredentials not configured properly in appsettings.json");
         }
+        this.smpt = new SmtpClient("smtp.gmail.com")
+        {
+            Port = 587,
+            Credentials = new NetworkCredential(emailCredentials.Email, emailCredentials.Password),
+            EnableSsl = true,
+        };
     }
 
     // public async Task<> LoginAsync(LoginDTO loginDTO)
@@ -32,106 +40,154 @@ public class UserService : IUserService
     //     return  
     // }
 
-   public async Task<bool> RegisterCustomerAsync(RegisterDTO registerDTO)
-{
-    using var transaction = await context.Database.BeginTransactionAsync();
-    try
+    public async Task<bool> RegisterCustomerAsync(RegisterDTO registerDTO)
     {
-        if (await context.DbUsers.AnyAsync(u => u.Email == registerDTO.Email))
-            throw new Exception("User with this email already exists");
-
-        var hashedPassword = HashPassword(registerDTO.Password);
-        var customerType = await context.DbCustomerTypes
-            .FirstAsync(c => c.CustomerType.ToLower() == registerDTO.CustomerType.ToLower());
-
-        var user = new UsersModel
+        using var transaction = await context.Database.BeginTransactionAsync();
+        try
         {
-            Name = registerDTO.Name!,
-            Email = registerDTO.Email!,
-            Password = hashedPassword,
-            Age = registerDTO.Age,
-            DOB = registerDTO.DOB,
-            IsEmployed = registerDTO.IsEmployed,
-            Address = registerDTO.Address,
-            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
-            PhoneNumber = registerDTO.PhoneNumber!,
-            RoleId = 2,
-            IsVerified = false,
-            CustomerTypeId = customerType.CustomerTypeId
-        };
+            if (await context.DbUsers.AnyAsync(u => u.Email == registerDTO.Email))
+                throw new Exception("User with this email already exists");
 
-        context.DbUsers.Add(user);
-        await context.SaveChangesAsync();
-
-        var otp = new Random().Next(100000, 999999);
-
-        var otpRecord = await context.DbOTP.FirstOrDefaultAsync(o => o.Email == registerDTO.Email);
-        if (otpRecord != null)
-        {
-            otpRecord.OTP = otp;
-            otpRecord.ExpiryTime = DateTime.Now.AddMinutes(5);
-            context.DbOTP.Update(otpRecord);
-        }
-        else
-        {
-            var otpEntry = new OTPValidationModel
+            var hashedPassword = HashPassword(registerDTO.Password);
+            var customerType = await context.DbCustomerTypes
+                .FirstAsync(c => c.CustomerType.ToLower() == registerDTO.CustomerType.ToLower());
+            var Role = await context.DbRoles.FirstAsync(r => r.RoleName.ToLower() == "customer");
+            var user = new UsersModel
             {
-                Email = registerDTO.Email,
-                OTP = otp,
-                ExpiryTime = DateTime.Now.AddMinutes(5)
+                Name = registerDTO.Name!,
+                Email = registerDTO.Email!,
+                Password = hashedPassword,
+                Age = registerDTO.Age,
+                DOB = registerDTO.DOB,
+                IsEmployed = registerDTO.IsEmployed,
+                Address = registerDTO.Address,
+                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+                PhoneNumber = registerDTO.PhoneNumber!,
+                RoleId = Role.RoleId,
+                IsVerified = false,
+                CustomerTypeId = customerType.CustomerTypeId
             };
-            context.DbOTP.Add(otpEntry);
+
+            context.DbUsers.Add(user);
+            await context.SaveChangesAsync();
+
+            var otp = new Random().Next(100000, 999999);
+
+            var otpRecord = await context.DbOTP.FirstOrDefaultAsync(o => o.Email == registerDTO.Email);
+            if (otpRecord != null)
+            {
+                otpRecord.OTP = otp;
+                otpRecord.ExpiryTime = DateTime.Now.AddMinutes(5);
+                context.DbOTP.Update(otpRecord);
+            }
+            else
+            {
+                var otpEntry = new OTPValidationModel
+                {
+                    Email = registerDTO.Email,
+                    OTP = otp,
+                    ExpiryTime = DateTime.Now.AddMinutes(5)
+                };
+                context.DbOTP.Add(otpEntry);
+            }
+            await context.SaveChangesAsync();
+
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "OTP.html");
+            string template = File.ReadAllText(templatePath);
+            string body = template
+                .Replace("{NAME}", registerDTO.Name)
+                .Replace("{OTP}", otp.ToString());
+            var mail = new MailMessage(emailCredentials.Email, registerDTO.Email!)
+            {
+                Subject = "Your Bank OTP Verification",
+                Body = body,
+                IsBodyHtml = true
+            };
+
+
+            await smpt.SendMailAsync(mail);
+
+            await transaction.CommitAsync();
+            return true;
         }
-        await context.SaveChangesAsync();
-
-        var smtp = new SmtpClient("smtp.gmail.com")
+        catch (Exception ex)
         {
-            Port = 587,
-            Credentials = new NetworkCredential(emailCredentials.Email, emailCredentials.Password),
-            EnableSsl = true,
-        };
-
-        var mail = new MailMessage(emailCredentials.Email, registerDTO.Email!)
-        {
-            Subject = "Your Bank OTP Verification",
-            Body = $"Your OTP is: {otp}. It will expire in 5 minutes."
-        };
-
-        await smtp.SendMailAsync(mail);
-
-        await transaction.CommitAsync();
-        return true;
+            await transaction.RollbackAsync();
+            return false;
+        }
     }
-    catch(Exception ex)
+
+    public async Task<bool> GetOTPAsync(string email)
     {
-        await transaction.RollbackAsync();
-        return false;
-    }
-}
+        try
+        {
+            var otp = new Random().Next(100000, 999999);
+            var otpRecord = await context.DbOTP.FirstOrDefaultAsync(o => o.Email == email);
+            if (otpRecord != null)
+            {
+                otpRecord.OTP = otp;
+                otpRecord.ExpiryTime = DateTime.Now.AddMinutes(5);
+                context.DbOTP.Update(otpRecord);
+            }
+            else
+            {
+                var otpEntry = new OTPValidationModel
+                {
+                    Email = email,
+                    OTP = otp,
+                    ExpiryTime = DateTime.Now.AddMinutes(5)
+                };
+                context.DbOTP.Add(otpEntry);
+            }
+            await context.SaveChangesAsync();
+            var user = await context.DbUsers.FirstAsync(u => u.Email.ToLower() == email.ToLower());
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "OTP.html");
+            string template = File.ReadAllText(templatePath);
+            string body = template
+                .Replace("{NAME}", user.Name)
+                .Replace("{OTP}", otp.ToString());
+            var mail = new MailMessage(emailCredentials.Email, email!)
+            {
+                Subject = "Your Bank OTP Verification",
+                Body = body,
+                IsBodyHtml = true
+            };
+            await smpt.SendMailAsync(mail);
 
-    public async Task<bool> VerifyOtpAsync(string email, int otp)
+            return true;
+            
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+
+    }
+
+    public async Task<string> VerifyOtpAsync(string email, int otp)
     {
         try
         {
             var otpRecord = await context.DbOTP.FirstOrDefaultAsync(o => o.Email == email && o.OTP == otp);
 
             if (otpRecord == null)
-                return false;
+                return "OTP Not Found";
             if (otpRecord.ExpiryTime < DateTime.Now)
-                return false;
+                return "OTP Expired";
 
             var user = await context.DbUsers.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null) return false;
+            if (user == null) return "User Not Found";
 
             user.IsVerified = true;
             context.DbOTP.Remove(otpRecord);
             await context.SaveChangesAsync();
 
-            return true;
+            return "success";
         }
         catch (Exception ex)
         {
-            return false;
+            return "failed";
         }
     }
     private string HashPassword(string password)
@@ -155,6 +211,10 @@ public class UserService : IUserService
         {
             return "";
         }
+    }
+    private void SendWelcomeMailAsync(string email)
+    {
+
     }
 
 }

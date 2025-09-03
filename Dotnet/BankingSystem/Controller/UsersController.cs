@@ -1,6 +1,8 @@
 using DTO;
 using interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace Controllers
 {
@@ -35,10 +37,40 @@ namespace Controllers
         {
             var isVerified = await userService.VerifyOtpAsync(email, otp);
 
-            if (!isVerified)
-                return BadRequest("Invalid or expired OTP.");
+            if (isVerified == "User Not Found")
+            {
+                return BadRequest("User Not Found");
+            }
+            else if(isVerified == "OTP Not Found")
+            {
+                return BadRequest("OTP Not Found");
+            }
+            else if(isVerified == "OTP Expired")
+            {
+                return BadRequest("OTP Expired");
+            }
+            else if(isVerified == "failed")
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
 
             return Ok(new { message = "Email verified successfully!" });
+        }
+
+        [HttpGet("Get-OTP")]
+        
+        public async Task<IActionResult> GetOTP([FromQuery] string email)
+        {
+            var IsOTPSent = await userService.GetOTPAsync(email);
+            if (IsOTPSent)
+            {
+                return Ok("OTP Sent");
+            }
+            else
+            {
+                return BadRequest("Not Sent!"); 
+            }
+            
         }
     }
 }

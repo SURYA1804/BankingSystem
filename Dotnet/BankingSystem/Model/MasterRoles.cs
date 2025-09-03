@@ -6,5 +6,5 @@ public class MasterRoles
 {
     [Key]
     public int RoleId { get; set; }
-    public string? RoleName { get; set;}
+    public required string RoleName { get; set;}
 }

@@ -6,7 +6,7 @@ public class OTPValidationModel
 {
     [Key]
     public int ID { get; set; }
-    public string? Email { get; set; }
+    public required string Email { get; set; }
 
     public int OTP { get; set; }
 

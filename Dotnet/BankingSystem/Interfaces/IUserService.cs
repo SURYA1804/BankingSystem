@@ -7,5 +7,6 @@ public interface IUserService
 {
     Task<bool> RegisterCustomerAsync(RegisterDTO registerDTO);
     // Task<UsersModel> LoginAsync(LoginDTO loginDTO);
-    Task<bool> VerifyOtpAsync(string email, int otp);
+    Task<string> VerifyOtpAsync(string email, int otp);
+    Task<bool> GetOTPAsync(string email);
 }
