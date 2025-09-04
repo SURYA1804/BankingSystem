@@ -34,11 +34,27 @@ public class UserService : IUserService
             EnableSsl = true,
         };
     }
+    public async Task<UsersModel> LoginAsync(LoginDTO loginDTO)
+    {
+        try
+        {
+            var user = await context.DbUsers.FirstAsync(m => m.UserName.ToLower() == loginDTO.UserName.ToLower());
+            if (user == null)
+            {
+                return null;
+            }
+            user.LastLoginAt = IndianTime.GetIndianTime();
+            await context.SaveChangesAsync();
+            await GetOTPAsync(user.Email);
+            return user;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
 
-    // public async Task<> LoginAsync(LoginDTO loginDTO)
-    // {
-    //     return  
-    // }
+        
+    }
 
     public async Task<bool> RegisterCustomerAsync(RegisterDTO registerDTO)
     {
@@ -48,7 +64,7 @@ public class UserService : IUserService
             if (await context.DbUsers.AnyAsync(u => u.Email == registerDTO.Email))
                 throw new Exception("User with this email already exists");
 
-            var hashedPassword = HashPassword(registerDTO.Password);
+            var hashedPassword = HassPassword.GetHashPassword(registerDTO.Password);
             var customerType = await context.DbCustomerTypes
                 .FirstAsync(c => c.CustomerType.ToLower() == registerDTO.CustomerType.ToLower());
             var Role = await context.DbRoles.FirstAsync(r => r.RoleName.ToLower() == "customer");
@@ -61,11 +77,12 @@ public class UserService : IUserService
                 DOB = registerDTO.DOB,
                 IsEmployed = registerDTO.IsEmployed,
                 Address = registerDTO.Address,
-                CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+                CreatedAt = DateOnly.FromDateTime(IndianTime.GetIndianTime()),
                 PhoneNumber = registerDTO.PhoneNumber!,
                 RoleId = Role.RoleId,
                 IsVerified = false,
-                CustomerTypeId = customerType.CustomerTypeId
+                CustomerTypeId = customerType.CustomerTypeId,
+                UserName = registerDTO.UserName
             };
 
             context.DbUsers.Add(user);
@@ -77,7 +94,7 @@ public class UserService : IUserService
             if (otpRecord != null)
             {
                 otpRecord.OTP = otp;
-                otpRecord.ExpiryTime = DateTime.Now.AddMinutes(5);
+                otpRecord.ExpiryTime = IndianTime.GetIndianTime().AddMinutes(5);
                 context.DbOTP.Update(otpRecord);
             }
             else
@@ -86,7 +103,7 @@ public class UserService : IUserService
                 {
                     Email = registerDTO.Email,
                     OTP = otp,
-                    ExpiryTime = DateTime.Now.AddMinutes(5)
+                    ExpiryTime = IndianTime.GetIndianTime().AddMinutes(5)
                 };
                 context.DbOTP.Add(otpEntry);
             }
@@ -126,7 +143,7 @@ public class UserService : IUserService
             if (otpRecord != null)
             {
                 otpRecord.OTP = otp;
-                otpRecord.ExpiryTime = DateTime.Now.AddMinutes(5);
+                otpRecord.ExpiryTime = IndianTime.GetIndianTime().AddMinutes(5);
                 context.DbOTP.Update(otpRecord);
             }
             else
@@ -135,7 +152,7 @@ public class UserService : IUserService
                 {
                     Email = email,
                     OTP = otp,
-                    ExpiryTime = DateTime.Now.AddMinutes(5)
+                    ExpiryTime = IndianTime.GetIndianTime().AddMinutes(5)
                 };
                 context.DbOTP.Add(otpEntry);
             }
@@ -173,7 +190,7 @@ public class UserService : IUserService
 
             if (otpRecord == null)
                 return "OTP Not Found";
-            if (otpRecord.ExpiryTime < DateTime.Now)
+            if (otpRecord.ExpiryTime < IndianTime.GetIndianTime())
                 return "OTP Expired";
 
             var user = await context.DbUsers.FirstOrDefaultAsync(u => u.Email == email);
@@ -182,7 +199,7 @@ public class UserService : IUserService
             user.IsVerified = true;
             context.DbOTP.Remove(otpRecord);
             await context.SaveChangesAsync();
-
+            SendWelcomeMailAsync(user);
             return "success";
         }
         catch (Exception ex)
@@ -190,31 +207,20 @@ public class UserService : IUserService
             return "failed";
         }
     }
-    private string HashPassword(string password)
+   
+    private async void SendWelcomeMailAsync(UsersModel user)
     {
-        try
+        string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
+        string template = File.ReadAllText(templatePath);
+        string body = template.Replace("{Name}", user.Name).Replace("{UserName}",user.UserName).
+        Replace("{LoginUrl}","alterego.bank");
+        var mail = new MailMessage(emailCredentials.Email, user.Email)
         {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(password);
-                byte[] hashBytes = sha256.ComputeHash(bytes);
-
-                StringBuilder builder = new StringBuilder();
-                foreach (var b in hashBytes)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
-        catch (Exception ex)
-        {
-            return "";
-        }
-    }
-    private void SendWelcomeMailAsync(string email)
-    {
-
+            Subject = "Welcome To Alter Ego Bank",
+            Body = body,
+            IsBodyHtml = true
+        };
+        await smpt.SendMailAsync(mail);
     }
 
 }

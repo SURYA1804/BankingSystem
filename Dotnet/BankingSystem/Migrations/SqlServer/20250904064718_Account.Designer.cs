@@ -9,11 +9,11 @@ using MyDbContext;
 
 #nullable disable
 
-namespace BankingSystem.Migrations
+namespace BankingSystem.Migrations.SqlServer
 {
-    [DbContext(typeof(MyAppDbContext))]
-    [Migration("20250903123058_OTP")]
-    partial class OTP
+    [DbContext(typeof(SqlServerDbContext))]
+    [Migration("20250904064718_Account")]
+    partial class Account
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,70 @@ namespace BankingSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence("AccountNumberSeq")
+                .StartsAt(1000000000L);
+
+            modelBuilder.Entity("Model.AccountModel", b =>
+                {
+                    b.Property<long>("AccountNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValueSql("NEXT VALUE FOR AccountNumberSeq");
+
+                    b.Property<int>("AccountTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAccountClosed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastTransactionAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AccountNumber");
+
+                    b.HasIndex("AccountTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DbAccount");
+                });
+
+            modelBuilder.Entity("Model.MasterAccountTypeModel", b =>
+                {
+                    b.Property<int>("AccountTypeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountTypeID"));
+
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AccountTypeID");
+
+                    b.ToTable("DbAccountType");
+                });
+
             modelBuilder.Entity("Model.MasterCustomerType", b =>
                 {
                     b.Property<int>("CustomerTypeId")
@@ -34,6 +98,7 @@ namespace BankingSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerTypeId"));
 
                     b.Property<string>("CustomerType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerTypeId");
@@ -50,6 +115,7 @@ namespace BankingSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
                     b.Property<string>("RoleName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoleId");
@@ -66,6 +132,7 @@ namespace BankingSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpiryTime")
@@ -104,7 +171,7 @@ namespace BankingSystem.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsEmployed")
                         .HasColumnType("bit");
@@ -125,18 +192,50 @@ namespace BankingSystem.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId");
 
                     b.HasIndex("CustomerTypeId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
 
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("DbUsers");
+                });
+
+            modelBuilder.Entity("Model.AccountModel", b =>
+                {
+                    b.HasOne("Model.MasterAccountTypeModel", "AccountType")
+                        .WithMany()
+                        .HasForeignKey("AccountTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Model.UsersModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Model.UsersModel", b =>

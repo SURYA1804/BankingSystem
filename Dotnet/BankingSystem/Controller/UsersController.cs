@@ -11,10 +11,13 @@ namespace Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly IAuthService authService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService,IAuthService authService)
         {
             this.userService = userService;
+            this.authService = authService;
+
         }
 
         [HttpPost("register")]
@@ -41,15 +44,15 @@ namespace Controllers
             {
                 return BadRequest("User Not Found");
             }
-            else if(isVerified == "OTP Not Found")
+            else if (isVerified == "OTP Not Found")
             {
                 return BadRequest("OTP Not Found");
             }
-            else if(isVerified == "OTP Expired")
+            else if (isVerified == "OTP Expired")
             {
                 return BadRequest("OTP Expired");
             }
-            else if(isVerified == "failed")
+            else if (isVerified == "failed")
             {
                 return StatusCode(500, "Internal Server Error");
             }
@@ -58,7 +61,7 @@ namespace Controllers
         }
 
         [HttpGet("Get-OTP")]
-        
+
         public async Task<IActionResult> GetOTP([FromQuery] string email)
         {
             var IsOTPSent = await userService.GetOTPAsync(email);
@@ -68,9 +71,29 @@ namespace Controllers
             }
             else
             {
-                return BadRequest("Not Sent!"); 
+                return BadRequest("Not Sent!");
             }
-            
+
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        {
+            var result = await userService.LoginAsync(loginDTO);
+            if (result != null)
+            {
+                var token = await authService.GenerateJwtToken(result);
+                return Ok(new 
+                {
+                    message = "Enter OTP To Login",
+                    token = token
+                });
+            }
+            else
+            {
+                return NotFound("User Not Found");
+            }
+
         }
     }
 }

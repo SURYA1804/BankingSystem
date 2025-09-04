@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Model;
 
@@ -16,7 +17,8 @@ public class UsersModel
 
     [Required]
     public string Name { get; set; } = string.Empty;
-
+    [Required]
+    public string UserName { get; set; } = string.Empty;
     [Range(1, 120)]
     public int Age { get; set; }
 

@@ -9,11 +9,11 @@ using MyDbContext;
 
 #nullable disable
 
-namespace BankingSystem.Migrations
+namespace BankingSystem.Migrations.SqlServer
 {
-    [DbContext(typeof(MyAppDbContext))]
-    [Migration("20250903111335_Second")]
-    partial class Second
+    [DbContext(typeof(SqlServerDbContext))]
+    [Migration("20250904045319_uniqueConstraint")]
+    partial class uniqueConstraint
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,7 @@ namespace BankingSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerTypeId"));
 
                     b.Property<string>("CustomerType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerTypeId");
@@ -50,11 +51,35 @@ namespace BankingSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
                     b.Property<string>("RoleName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RoleId");
 
                     b.ToTable("DbRoles");
+                });
+
+            modelBuilder.Entity("Model.OTPValidationModel", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OTP")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("DbOTP");
                 });
 
             modelBuilder.Entity("Model.UsersModel", b =>
@@ -82,9 +107,12 @@ namespace BankingSystem.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsEmployed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastLoginAt")
@@ -99,16 +127,30 @@ namespace BankingSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId");
 
                     b.HasIndex("CustomerTypeId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("DbUsers");
                 });
