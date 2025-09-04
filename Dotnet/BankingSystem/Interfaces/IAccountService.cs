@@ -9,6 +9,6 @@ public interface IAccountService
     Task<string> RequestAccountTypeChangeAsync(long accountNumber, string newAccountType, int userId);
     Task<string> CloseAccountAsync(long accountNumber);
     Task<List<AccountModel>> GetAccountsByUserIdAsync(int userId);
-    Task<List<AccountModel>> GetAllAccountsAsync();
+    Task<List<AccountDTO>> GetAllAccountsAsync();
     
 }

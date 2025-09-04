@@ -391,3 +391,5 @@ C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\bin\De
 C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\AutoMapper.dll
+C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

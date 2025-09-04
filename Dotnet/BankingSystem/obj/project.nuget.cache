@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "D+1pErwI2fU=",
+  "dgSpecHash": "a/oBd1yXrgE=",
   "success": true,
   "projectFilePath": "C:\\Users\\surya.p\\Desktop\\BankingSystem\\BankingSystem\\Dotnet\\BankingSystem\\BankingSystem.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\surya.p\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\surya.p\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\surya.p\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\surya.p\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
     "C:\\Users\\surya.p\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",

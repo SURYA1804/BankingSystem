@@ -14,7 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    });;
+
+builder.Services.AddAutoMapper(typeof(Program)); 
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -111,6 +117,8 @@ builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
 builder.Services.AddScoped<ILoanService,LoanService >();
+builder.Services.AddScoped<ILoanTypeService, LoanTypeService>();
+builder.Services.AddScoped<ICustomerSupportService, CustomerSupportService>();
 
 
 

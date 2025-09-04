@@ -1,3 +1,4 @@
+using AutoMapper;
 using DTO;
 using interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +10,11 @@ namespace Service;
 public class AccountService : IAccountService
 {
     private readonly MyAppDbContext context;
-    public AccountService(MyAppDbContext context)
+    private readonly IMapper mapper;
+    public AccountService(MyAppDbContext context, IMapper mapper)
     {
         this.context = context;
+        this.mapper = mapper;
     }
     public async Task<string> CreateAccountAsync(AccountCreationDTO accountCreationDTO)
     {
@@ -122,9 +125,10 @@ public class AccountService : IAccountService
 
         return "Account update request submitted. Awaiting staff approval.";
     }
-    public async Task<List<AccountModel>> GetAllAccountsAsync()
+    public async Task<List<AccountDTO>> GetAllAccountsAsync()
     {
-        return await context.DbAccount.Include(a => a.User).Include(a => a.AccountType).ToListAsync();
+        var result = await context.DbAccount.Include(a => a.User).Include(a => a.AccountType).ToListAsync();
+        return mapper.Map<List<AccountDTO>>(result);
     }
 
     public async Task<List<AccountModel>> GetAccountsByUserIdAsync(int userId)
