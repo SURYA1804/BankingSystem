@@ -1,29 +1,36 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, finalize } from 'rxjs';
 import Swal from 'sweetalert2';
 import { ReferenceDataService } from '../../../services/referencedata/reference-data.service';
-import { AccountService } from '../../../services/AccountService/account-service.service';
+import { AccountDTO, AccountService } from '../../../services/AccountService/account-service.service';
 import { IAccountType } from '../../../../Interfaces/IAccountType';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { IUser } from '../../../../Interfaces/IUser';
 
 @Component({
   selector: 'app-account-management',
   standalone: true,
   templateUrl: './account-management.component.html',
   styleUrls: ['./account-management.component.css'],
-  imports:[CommonModule, FormsModule, ReactiveFormsModule,MatFormFieldModule,MatSelectModule ]
+  imports:[CommonModule, FormsModule, ReactiveFormsModule,MatFormFieldModule,MatSelectModule]
 })
 export class AccountManagementComponent implements OnInit {
   private fb = inject(FormBuilder);
   private ref = inject(ReferenceDataService);
   private api = inject(AccountService);
   private cdr = inject(ChangeDetectorRef);
-  user: any | null = null;
+  private platformId = inject(PLATFORM_ID);
+
+  user: IUser | null = null;
   types$!: Observable<IAccountType[]>;
   AccountTypes: IAccountType[] = [];
+  accounts: AccountDTO[] = [];
+  accountsLoading = false;
+  accountsError: string | null = null;
   creating = false;
   closing = false;
   changing = false;
@@ -42,26 +49,27 @@ export class AccountManagementComponent implements OnInit {
     accountNumber: ['', Validators.required],
     newAccountType: ['', Validators.required]
   });
-  constructor()
-  {
-    this.types$ = this.ref.getAccountTypes();
-    this.types$.subscribe(types => {
-      this.AccountTypes = types;
-      this.cdr.detectChanges();
-      console.log(this.AccountTypes)
-    });
-  }
+
 
   ngOnInit(): void {
+    this.setUserFromStorage();
+    this.loadUserAccounts();
     this.types$ = this.ref.getAccountTypes();
     this.types$.subscribe(types => {
       this.AccountTypes = types;
       this.cdr.detectChanges();
       console.log(this.AccountTypes)
     });
-    this.setUserFromStorage();
   }
 
+iconFor(type?: string): string {
+  const t = (type || '').toLowerCase();
+  if (t.includes('saving')) return 'bi-piggy-bank';
+  if (t.includes('current')) return 'bi-cash-coin';
+  if (t.includes('salary')) return 'bi-briefcase';
+  if (t.includes('joint')) return 'bi-people';
+  return 'bi-credit-card';
+}
 
   private setUserFromStorage() {
     const raw = localStorage.getItem('UserDetails');
@@ -74,6 +82,23 @@ export class AccountManagementComponent implements OnInit {
     }
   }
 
+
+  private loadUserAccounts() {
+    if (!this.user?.userId) return;
+    this.accountsLoading = true;
+    this.accountsError = null;
+
+    this.api.getAccountsByUserId(this.user.userId)
+      .pipe(finalize(() => this.accountsLoading = false))
+      .subscribe({
+        next: (list) => this.accounts = Array.isArray(list) ? list : [],
+        error: (err) => {
+          this.accounts = [];
+          this.accountsError = err?.error?.message || err?.message || 'Failed to load accounts';
+        }
+      });
+  }
+
   private success(msg: string) {
     Swal.fire({ icon: 'success', title: 'Success', text: msg, timer: 1800, showConfirmButton: false });
   }
@@ -83,12 +108,13 @@ export class AccountManagementComponent implements OnInit {
   }
 
   submitCreate() {
+    debugger
     if (this.createForm.invalid || !this.user) { this.error('Missing or invalid data'); return; }
     this.creating = true;
     const payload = {
       userId: this.user.userId,
       accountType: this.createForm.value.accountType!,
-      initialDeposit: Number(this.createForm.value.initialDeposit || 0)
+      OpeningBalance: Number(this.createForm.value.initialDeposit || 99999)
     };
     this.api.createAccount(payload).pipe(finalize(() => this.creating = false))
       .subscribe({

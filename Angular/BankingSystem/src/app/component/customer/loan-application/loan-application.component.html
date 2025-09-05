@@ -1,1 +1,68 @@
-<p>loan-application works!</p>
+<div class="container py-4">
+  <div class="card border-0 shadow-premium overflow-hidden premium-gradient">
+    <!-- Header -->
+    <div class="px-4 py-3 d-flex align-items-center justify-content-between premium-header">
+      <div class="d-flex align-items-center gap-2">
+        <span class="premium-icon-wrap">
+          <i class="bi bi-journal-check"></i>
+        </span>
+        <h2 class="h5 mb-0 fw-semibold text-white">Loan Application</h2>
+      </div>
+      <span class="badge rounded-pill bg-light text-dark px-3">Secure</span>
+    </div>
+
+    <div class="card-body p-4 bg-white">
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <!-- Loan Type -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Loan Type</label>
+          <div class="input-group">
+            <span class="input-group-text premium-addon"><i class="bi bi-ui-checks-grid"></i></span>
+            <select class="form-select" formControlName="loanTypeId" required>
+              <option value="" disabled selected>Select</option>
+              <option *ngFor="let t of loanTypes" [value]="t.id">{{ t.name }}</option>
+            </select>
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="form.controls.loanTypeId.invalid && form.controls.loanTypeId.touched">
+            Please select a loan type.
+          </div>
+        </div>
+
+        <!-- Loan Amount -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Loan Amount</label>
+          <div class="input-group">
+            <span class="input-group-text premium-addon"><i class="bi bi-currency-rupee"></i></span>
+            <input type="number" min="1" class="form-control" formControlName="loanAmount" placeholder="Enter amount" />
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="form.controls.loanAmount.invalid && form.controls.loanAmount.touched">
+            Enter a valid amount (min 1).
+          </div>
+        </div>
+
+        <!-- Current Salary (LPA) -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Current Salary (LPA)</label>
+          <div class="input-group">
+            <span class="input-group-text premium-addon"><i class="bi bi-briefcase"></i></span>
+            <input type="number" min="0" class="form-control" formControlName="currentSalaryInLPA" placeholder="e.g., 12" />
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="form.controls.currentSalaryInLPA.invalid && form.controls.currentSalaryInLPA.touched">
+            Enter a valid salary (≥ 0).
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-primary flex-grow-1" type="submit" [disabled]="submitting || form.invalid">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Submit Loan Request
+          </button>
+          <button type="button" class="btn btn-outline-secondary" [disabled]="submitting" (click)="form.reset()">
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

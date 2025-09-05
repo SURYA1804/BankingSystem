@@ -30,3 +30,75 @@
 .btn-light { color: #1e3c72; font-weight: 600; border-radius: 10px; }
 
 .btn-light:hover { background-color: #fff; color: #1b3566; }
+
+/* Card and header */
+.premium-gradient {
+  background: linear-gradient(135deg, #1f3b7a 0%, #2948a0 50%, #1b2a4b 100%);
+}
+.premium-header {
+  backdrop-filter: saturate(140%) blur(2px);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.shadow-premium {
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Icon in header */
+.premium-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 18px;
+}
+
+/* List item */
+.premium-item:hover {
+  background: #f8faff;
+}
+.premium-acc-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #eff4ff, #e9f0ff);
+  color: #2441a7;
+  font-size: 20px;
+}
+.premium-balance {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+/* Chips */
+.chip {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+.chip-success { background: #e8f7ef; color: #157347; }
+.chip-danger { background: #fdecec; color: #b02a37; }
+.chip-neutral { background: #eef1f4; color: #475569; }
+
+/* Empty state */
+.premium-empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: #f1f5ff;
+  color: #274bbb;
+  font-size: 24px;
+}
+

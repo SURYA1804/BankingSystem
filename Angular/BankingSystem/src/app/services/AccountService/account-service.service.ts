@@ -4,14 +4,26 @@ import { Observable } from 'rxjs';
 import { IAccountSummary } from '../../../Interfaces/IAccountSummary';
 
 export interface ApiMessage { message: string; }
-
+export interface AccountDTO {
+  accountNumber: number;
+  balance: number;
+  createdAt: string;
+  userId: number;
+  userName: string;
+  accountTypeName: string;
+  accountTypeId: number;
+  lastTransactionAt?: string | null;
+  currency: string;
+  isActive: boolean;
+  isAccountClosed: boolean;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private http = inject(HttpClient);
-  private base = '/api/v1/Account';
+  private base = 'http://localhost:5139/api/v1/Account';
 
-  createAccount(body: { userId: number; accountType: string; initialDeposit: number; nickname?: string }): Observable<ApiMessage> {
+  createAccount(body: { userId: number; accountType: string; OpeningBalance: number;  }): Observable<ApiMessage> {
     return this.http.post<ApiMessage>(`${this.base}/CreateAccount`, body);
   }
 
@@ -32,8 +44,8 @@ export class AccountService {
     return this.http.get<IAccountSummary[]>(`${this.base}/AllAccount`);
   }
 
-  getAccountsByUser(userId: number): Observable<IAccountSummary[]> {
-    const params = new HttpParams().set('userId', userId.toString());
-    return this.http.get<IAccountSummary[]>(`${this.base}/AccountByUser`, { params });
+  getAccountsByUserId(userId: number): Observable<AccountDTO[]> {
+    const params = new HttpParams().set('userId', String(userId));
+    return this.http.get<AccountDTO[]>(`${this.base}/AccountByUser`, { params });
   }
 }

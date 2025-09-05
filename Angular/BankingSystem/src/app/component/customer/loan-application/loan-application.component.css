@@ -1,0 +1,29 @@
+.premium-gradient {
+  background: linear-gradient(135deg, #1f3b7a 0%, #2948a0 50%, #1b2a4b 100%);
+  border-radius: 16px;
+}
+.premium-header {
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: saturate(140%) blur(2px);
+}
+.shadow-premium {
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
+}
+.premium-icon-wrap {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  font-size: 18px;
+}
+.premium-addon {
+  background: #f5f7ff;
+  color: #2948a0;
+  border: 1px solid #e7eaf3;
+}
+.card-body.bg-white {
+  background: #fff;
+}

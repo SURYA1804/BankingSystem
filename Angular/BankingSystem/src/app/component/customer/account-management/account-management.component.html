@@ -1,5 +1,94 @@
+
+
+
 <div class="account-mgmt container py-4">
   <h2 class="mb-4 fw-bold text-white">Account Management</h2>
+  <!-- User Accounts -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-premium overflow-hidden premium-gradient">
+      <div class="card-body p-0">
+        <!-- Header -->
+        <div class="px-4 py-3 d-flex align-items-center justify-content-between premium-header">
+          <div class="d-flex align-items-center gap-2">
+            <span class="premium-icon-wrap">
+              <i class="bi bi-wallet2"></i>
+            </span>
+            <h5 class="card-title mb-0 fw-semibold text-white">My Accounts</h5>
+          </div>
+      <span class="badge rounded-pill bg-light text-dark px-3" *ngIf="(accounts?.length ?? 0) as len">
+        {{ len }} account{{ len > 1 ? 's' : '' }}
+      </span>
+
+
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="accountsLoading" class="d-flex align-items-center gap-2 px-4 py-4 bg-white">
+          <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+          <span class="text-muted">Fetching latest balances...</span>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="!accountsLoading && accountsError" class="alert alert-danger m-4">
+          {{ accountsError }}
+        </div>
+
+        <!-- Accounts List -->
+        <div *ngIf="!accountsLoading && !accountsError && accounts.length" class="list-group list-group-flush">
+          <div
+            *ngFor="let a of accounts"
+            class="list-group-item px-4 py-3 bg-white border-0 border-bottom premium-item d-flex align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-start gap-3">
+              <div class="premium-acc-avatar">
+              <i class="bi" [ngClass]="iconFor(a.accountTypeName)"></i>
+              </div>
+              <div>
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                  <span class="fw-semibold fs-6">{{ a.accountTypeName }}</span>
+                  <span class="text-muted">•</span>
+                  <span class="premium-balance">
+                    {{ a.currency }} {{ a.balance | number: '1.2-2' }}
+                  </span>
+                </div>
+                <div class="text-muted small mt-1">
+                  A/C {{ a.accountNumber }} • Opened {{ a.createdAt | date: 'mediumDate' }}
+                  <span *ngIf="a.lastTransactionAt">
+                    • Last Tx {{ a.lastTransactionAt | date: 'short' }}
+                  </span>
+                </div>
+                <div class="small mt-1">
+                  <span class="text-muted">Holder:</span>
+                  <span class="fw-500">{{ a.userName }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-end">
+              <span class="chip"
+                    [class.chip-success]="a.isActive && !a.isAccountClosed"
+                    [class.chip-neutral]="!a.isActive && !a.isAccountClosed"
+                    [class.chip-danger]="a.isAccountClosed">
+                {{ a.isAccountClosed ? 'Closed' : (a.isActive ? 'Active' : 'Inactive') }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!accountsLoading && !accountsError && !accounts.length" class="px-4 py-5 bg-white text-center">
+          <div class="premium-empty-icon mx-auto mb-2">
+            <i class="bi bi-inboxes"></i>
+          </div>
+          <div class="fw-semibold">No accounts yet</div>
+          <div class="text-muted small">Open a new account to get started.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <div class="row g-4">
     <div class="col-12 col-lg-4">
@@ -13,9 +102,10 @@
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Select</mat-label>
                 <mat-select formControlName="accountType" placeholder="Select">
-                <mat-option *ngFor="let type of AccountTypes" [value]="type.AccountTypeID">
-                    {{ type.AccountType }}
-                </mat-option>
+                <mat-option [value]="'savings'">savings</mat-option>
+                <mat-option [value]="'current'">current</mat-option>
+                <mat-option [value]="'salary'">salary</mat-option>
+                <mat-option [value]="'joint'">joint</mat-option>
                 </mat-select>
             </mat-form-field>
             </div>
@@ -72,10 +162,11 @@
             <span class="form-label fw-semibold">Account Type</span>
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>Select</mat-label>
-                <mat-select formControlName="accountType" placeholder="Select">
-                <mat-option *ngFor="let type of AccountTypes" [value]="type.AccountTypeID">
-                    {{ type.AccountType }}
-                </mat-option>
+                <mat-select formControlName="newAccountType" placeholder="Select">
+                <mat-option [value]="'savings'">savings</mat-option>
+                <mat-option [value]="'current'">current</mat-option>
+                <mat-option [value]="'salary'">salary</mat-option>
+                <mat-option [value]="'joint'">joint</mat-option>
                 </mat-select>
             </mat-form-field>
             </div>
