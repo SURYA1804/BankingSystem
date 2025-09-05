@@ -1,0 +1,47 @@
+<div class="login-wrapper d-flex align-items-center justify-content-center">
+  <div class="glass-card">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary">Banking System</h2>
+      <p class="text-muted">Secure Login to Your Account</p>
+    </div>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm" class="mt-4">
+      <div class="mb-4">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+          <input type="text"
+                 class="form-control"
+                 placeholder="Username"
+                 [(ngModel)]="username"
+                 name="username"
+                 required />
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-shield-lock-fill"></i></span>
+          <input type="password"
+                 class="form-control"
+                 placeholder="Password"
+                 [(ngModel)]="password"
+                 name="password"
+                 required />
+        </div>
+      </div>
+
+      <button type="submit"
+              class="btn btn-gradient w-100 py-2 fw-semibold"
+              [disabled]="!loginForm.valid">
+        Login
+      </button>
+    </form>
+
+    <div class="text-center mt-4">
+      <small class="text-muted">
+        Don’t have an account?
+        <a routerLink="/register" class="fw-bold text-primary text-decoration-none">Register</a>
+      </small>
+    </div>
+  </div>
+</div>

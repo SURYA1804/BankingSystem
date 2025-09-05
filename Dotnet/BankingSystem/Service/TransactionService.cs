@@ -1,7 +1,9 @@
+using AutoMapper;
 using DTO;
 using interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model;
+using Model.DTOs;
 using MyDbContext;
 
 namespace Service
@@ -9,10 +11,12 @@ namespace Service
     public class TransactionService : ITransactionService
     {
         private readonly MyAppDbContext context;
+        private readonly IMapper mapper;
 
-        public TransactionService(MyAppDbContext context)
+        public TransactionService(MyAppDbContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public async Task<string> MakeTransactionAsync(MakeTransactionDTO makeTransactionDTO)
@@ -79,12 +83,7 @@ namespace Service
                 return $"Transaction failed: {ex.Message}";
             }
         }
-
-
-
-
-
-        public async Task<List<object>> GetAllTransactionsToApproveAsync()
+        public async Task<List<TransactionDTO>> GetAllTransactionsToApproveAsync()
         {
             try
             {
@@ -93,30 +92,34 @@ namespace Service
                     .Include(t => t.FromAccount).ThenInclude(a => a.User)
                     .Include(t => t.ToAccount).ThenInclude(a => a.User)
                     .Include(t => t.TransactionType)
-                    .Select(t => new
-                    {
-                        t.TransactionId,
-                        t.TransactionDate,
-                        t.IsVerificationRequired,
-                        t.IsSuccess,
-                        t.ErrorMessage,
-                        TransactionType = t.TransactionType.TransactionType,
-                        FromAccount = t.FromAccount.AccountNumber,
-                        FromUser = t.FromAccount.User.Name,
-                        FromEmail = t.FromAccount.User.Email,
-                        ToAccount = t.ToAccount.AccountNumber,
-                        ToUser = t.ToAccount.User.Name,
-                        ToEmail = t.ToAccount.User.Email
-                    })
                     .ToListAsync();
 
-                return transactions.Cast<object>().ToList();
+                return mapper.Map<List<TransactionDTO>>(transactions);
             }
             catch (Exception ex)
             {
-                return new List<object>();
+                return  null;
             }
         }
+        public async Task<List<TransactionDTO>> GetAllTransactionByAccountAsync(long AccountNumber)
+        {
+            try
+            {
+                var transactions = await context.DbTransactions
+                    .Where(t => t.FromAccountNumber == AccountNumber || t.ToAccountNumber == AccountNumber)
+                    .Include(t => t.FromAccount).ThenInclude(a => a.User)
+                    .Include(t => t.ToAccount).ThenInclude(a => a.User)
+                    .Include(t => t.TransactionType)
+                    .ToListAsync();
+
+                return mapper.Map<List<TransactionDTO>>(transactions);
+            }
+            catch (Exception ex)
+            {
+                return  null;
+            }
+        }
+
 
         public async Task<string> ApproveTransactionAsync(int transactionId, int staffId, bool isApproved)
         {

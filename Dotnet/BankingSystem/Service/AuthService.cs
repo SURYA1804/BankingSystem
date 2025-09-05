@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using DTO;
 using interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,17 +21,17 @@ public class AuthService : IAuthService
         this.context = context;
     }
 
-    public async  Task<string> GenerateJwtToken(UsersModel user)
+    public async  Task<string> GenerateJwtToken(UserDTO user)
     {
         var jwtSettings = _config.GetSection("Jwt");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var role = await context.DbRoles.FirstAsync(r=>r.RoleId == user.RoleId);
+        // var role = await context.DbRoles.FirstAsync(r=>r.RoleId == user.RoleId);
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Name,user.UserName ),
-            new Claim(ClaimTypes.Role, role.RoleName) 
+            new Claim(ClaimTypes.Role, user.RoleName!) 
         };
 
         var token = new JwtSecurityToken(

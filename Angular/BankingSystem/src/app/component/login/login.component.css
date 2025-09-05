@@ -1,0 +1,81 @@
+.login-wrapper {
+  height: 100vh;
+  background: linear-gradient(135deg, #0d6efd, #1e3c72, #2a5298);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  animation: fadeInUp 0.8s ease;
+}
+
+.glass-card h2 {
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.input-group {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.input-group-text {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.form-control {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 12px;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.form-control:focus {
+  box-shadow: none;
+  background: transparent;
+  color: #fff;
+}
+
+.btn-gradient {
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 242, 254, 0.4);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

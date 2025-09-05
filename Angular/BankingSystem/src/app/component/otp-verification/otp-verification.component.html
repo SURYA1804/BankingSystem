@@ -1,0 +1,29 @@
+<div class="otp-wrapper d-flex align-items-center justify-content-center">
+  <div class="glass-card text-center">
+    <h3 class="mb-3 text-gradient fw-bold">OTP Verification</h3>
+    <p class="text-light mb-4">An OTP has been sent to your registered email</p>
+
+    <div class="otp-boxes d-flex justify-content-center mb-4" (paste)="handlePaste($event)">
+      <input *ngFor="let digit of otpDigits; let i = index"
+             #otpInput
+             type="text"
+             maxlength="1"
+             class="form-control otp-input mx-2"
+             [(ngModel)]="otpDigits[i]"
+             name="otp{{i}}"
+             (input)="handleInput(i, $event)"
+             (keydown)="handleBackspace(i, $event)" />
+    </div>
+
+    <button (click)="onVerify()" class="btn btn-gradient w-100 py-2 fw-semibold">Verify OTP</button>
+
+    <div class="text-center mt-4">
+<small class="text-muted">
+  Didn’t receive OTP?
+  <a (click)="onResendOtp()" class="fw-bold text-primary text-decoration-none" style="cursor: pointer;">
+    Resend
+  </a>
+</small>
+    </div>
+  </div>
+</div>

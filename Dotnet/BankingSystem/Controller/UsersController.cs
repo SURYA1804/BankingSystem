@@ -35,7 +35,7 @@ namespace Controllers
                 new { message = "Registration successful. Please check your email for OTP." });
         }
 
-        [HttpPost("verify-otp")]
+        [HttpGet("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromQuery] string email, [FromQuery] int otp)
         {
             var isVerified = await userService.VerifyOtpAsync(email, otp);
@@ -83,10 +83,10 @@ namespace Controllers
             if (result != null)
             {
                 var token = await authService.GenerateJwtToken(result);
-                return Ok(new 
+                return Ok(new
                 {
-                    message = "Enter OTP To Login",
-                    token = token
+                    token = token,
+                    user = result
                 });
             }
             else

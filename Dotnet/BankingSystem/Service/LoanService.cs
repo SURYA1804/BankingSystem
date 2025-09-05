@@ -1,7 +1,9 @@
+using AutoMapper;
 using DTO;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model;
+using Model.DTOs;
 using MyDbContext;
 
 namespace Service;
@@ -9,9 +11,11 @@ namespace Service;
 public class LoanService:ILoanService
 {
     private readonly MyAppDbContext context;
-    public LoanService(MyAppDbContext context)
+    private readonly IMapper mapper;
+    public LoanService(MyAppDbContext context, IMapper mapper)
     {
         this.context = context;
+        this.mapper = mapper;
     }
 
     public async Task<string> CreateLoanRequestAsync(CreateLoanDTO createLoanDTO)
@@ -79,21 +83,25 @@ public class LoanService:ILoanService
         }
     }
 
-    public async Task<List<LoanModel>> GetAllLoansAsync()
+    public async Task<List<LoanDTO>> GetAllLoansAsync()
     {
-        return await context.DbLoan
-            .Include(l => l.User)
+        var result = await context.DbLoan
+            .Include(l => l.User).ThenInclude(l => l.CustomerType)
             .Include(l => l.LoanType)
             .OrderByDescending(l => l.CreatedAt)
             .ToListAsync();
+        
+        return mapper.Map<List<LoanDTO>>(result);
+
     }
-    public async Task<List<LoanModel>> GetAllLoansToApproveAsync()
+    public async Task<List<LoanDTO>> GetAllLoansToApproveAsync()
     {
-        return await context.DbLoan
-            .Include(l => l.User)
+        var result = await context.DbLoan
+            .Include(l => l.User).ThenInclude(l => l.CustomerType)
             .Include(l => l.LoanType)
             .Where(l => !l.IsApproved)
             .OrderBy(l => l.CreatedAt)
             .ToListAsync();
+        return mapper.Map<List<LoanDTO>>(result);
     }
 }

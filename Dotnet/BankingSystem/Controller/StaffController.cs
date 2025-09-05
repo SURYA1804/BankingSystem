@@ -31,10 +31,21 @@ public class StaffController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("GetAllAccountTickets")]
+    [HttpGet("GetAllAccountUpdateTickets")]
     public async Task<IActionResult> GetAllTicket()
     {
         var ticket = await staffService.GetAllAccountUpdateTickesAsync();
+        if (ticket == null)
+        {
+            NotFound("No Tickets");
+        }
+        return Ok(ticket);
+    }
+
+    [HttpGet("GetAllPendingAccountUpdateTickes")]
+    public async Task<IActionResult> GetAllPendingAccountUpdateTickes()
+    {
+        var ticket = await staffService.GetALlPendingAccountUpdateTicketAsync();
         if (ticket == null)
         {
             NotFound("No Tickets");

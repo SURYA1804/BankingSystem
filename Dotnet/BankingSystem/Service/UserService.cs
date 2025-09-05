@@ -11,18 +11,21 @@ using MyDbContext;
 using System.Text;
 using Microsoft.Extensions.Options;
 using System.Runtime.InteropServices.JavaScript;
+using AutoMapper;
 
 namespace Service;
 
 public class UserService : IUserService
 {
     private readonly MyAppDbContext context;
+    private readonly IMapper mapper;
     private readonly EmailCredentialsDTO emailCredentials;
     private SmtpClient smpt;
-    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions)
+    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions,IMapper mapper)
     {
         this.context = context;
         this.emailCredentials = emailOptions.Value;
+        this.mapper = mapper;
         if (string.IsNullOrEmpty(emailCredentials.Email) || string.IsNullOrEmpty(emailCredentials.Password))
         {
             throw new ArgumentException("EmailCredentials not configured properly in appsettings.json");
@@ -34,11 +37,12 @@ public class UserService : IUserService
             EnableSsl = true,
         };
     }
-    public async Task<UsersModel> LoginAsync(LoginDTO loginDTO)
+    public async Task<UserDTO> LoginAsync(LoginDTO loginDTO)
     {
         try
         {
-            var user = await context.DbUsers.FirstAsync(m => m.UserName.ToLower() == loginDTO.UserName.ToLower());
+            var user = await context.DbUsers.Include(r=>r.Role).Include(t=>t.CustomerType)
+            .FirstAsync(m => m.UserName.ToLower() == loginDTO.UserName.ToLower());
             if (user == null)
             {
                 return null;
@@ -46,7 +50,7 @@ public class UserService : IUserService
             user.LastLoginAt = IndianTime.GetIndianTime();
             await context.SaveChangesAsync();
             await GetOTPAsync(user.Email);
-            return user;
+            return mapper.Map<UserDTO>(user);
         }
         catch (Exception ex)
         {
@@ -65,8 +69,8 @@ public class UserService : IUserService
                 throw new Exception("User with this email already exists");
 
             var hashedPassword = HassPassword.GetHashPassword(registerDTO.Password);
-            var customerType = await context.DbCustomerTypes
-                .FirstAsync(c => c.CustomerType.ToLower() == registerDTO.CustomerType.ToLower());
+            // var customerType = await context.DbCustomerTypes
+            //     .FirstAsync(c => c.CustomerType.ToLower() == registerDTO.CustomerType.ToLower());
             var Role = await context.DbRoles.FirstAsync(r => r.RoleName.ToLower() == "customer");
             var user = new UsersModel
             {
@@ -81,7 +85,7 @@ public class UserService : IUserService
                 PhoneNumber = registerDTO.PhoneNumber!,
                 RoleId = Role.RoleId,
                 IsVerified = false,
-                CustomerTypeId = customerType.CustomerTypeId,
+                CustomerTypeId = Convert.ToInt32(registerDTO.CustomerType),
                 UserName = registerDTO.UserName
             };
 
@@ -195,11 +199,14 @@ public class UserService : IUserService
 
             var user = await context.DbUsers.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null) return "User Not Found";
-
-            user.IsVerified = true;
+            if (!user.IsVerified)
+            {
+                SendWelcomeMailAsync(user);
+                user.IsVerified = true;
+            }
             context.DbOTP.Remove(otpRecord);
             await context.SaveChangesAsync();
-            SendWelcomeMailAsync(user);
+
             return "success";
         }
         catch (Exception ex)

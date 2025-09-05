@@ -1,4 +1,5 @@
 using DTO;
+using Model.DTOs;
 
 namespace interfaces;
 
@@ -6,8 +7,10 @@ public interface ITransactionService
 {
     Task<string> MakeTransactionAsync(MakeTransactionDTO makeTransactionDTO);
 
-    Task<List<object>> GetAllTransactionsToApproveAsync();
+    Task<List<TransactionDTO>> GetAllTransactionsToApproveAsync();
 
     Task<string> ApproveTransactionAsync(int transactionId, int staffId, bool isApproved);
+
+    Task<List<TransactionDTO>> GetAllTransactionByAccountAsync(long AccountNumber);
     
 }

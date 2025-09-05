@@ -1,0 +1,93 @@
+<div class="account-mgmt container py-4">
+  <h2 class="mb-4 fw-bold text-white">Account Management</h2>
+
+  <div class="row g-4">
+    <div class="col-12 col-lg-4">
+      <div class="card gradient-card text-white">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Open New Account</h5>
+          <form [formGroup]="createForm" (ngSubmit)="submitCreate()" novalidate>
+
+            <div class="mb-3">
+            <span class="form-label fw-semibold">Account Type</span>
+            <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Select</mat-label>
+                <mat-select formControlName="accountType" placeholder="Select">
+                <mat-option *ngFor="let type of AccountTypes" [value]="type.AccountTypeID">
+                    {{ type.AccountType }}
+                </mat-option>
+                </mat-select>
+            </mat-form-field>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Initial Deposit</label>
+              <input type="number" min="0" class="form-control" formControlName="initialDeposit">
+            </div>
+
+            <button class="btn btn-light w-100" [disabled]="creating || createForm.invalid">
+              <span *ngIf="creating" class="spinner-border spinner-border-sm me-2"></span>
+              Create Account
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card gradient-card text-white">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Close Account</h5>
+          <form [formGroup]="closeForm" (ngSubmit)="submitClose()" novalidate>
+            <div class="mb-3">
+              <label class="form-label">Account Number</label>
+              <input type="text" class="form-control" formControlName="accountNumber">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Reason</label>
+              <textarea rows="3" class="form-control" formControlName="reason"></textarea>
+            </div>
+
+            <button class="btn btn-light w-100" [disabled]="closing || closeForm.invalid">
+              <span *ngIf="closing" class="spinner-border spinner-border-sm me-2"></span>
+              Close Account
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-4">
+      <div class="card gradient-card text-white">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Change Account Type</h5>
+          <form [formGroup]="changeTypeForm" (ngSubmit)="submitChangeType()" novalidate>
+            <div class="mb-3">
+              <label class="form-label">Account Number</label>
+              <input type="text" class="form-control" formControlName="accountNumber">
+            </div>
+
+            <div class="mb-3">
+            <span class="form-label fw-semibold">Account Type</span>
+            <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Select</mat-label>
+                <mat-select formControlName="accountType" placeholder="Select">
+                <mat-option *ngFor="let type of AccountTypes" [value]="type.AccountTypeID">
+                    {{ type.AccountType }}
+                </mat-option>
+                </mat-select>
+            </mat-form-field>
+            </div>
+
+
+            <button class="btn btn-light w-100" [disabled]="changing || changeTypeForm.invalid">
+              <span *ngIf="changing" class="spinner-border spinner-border-sm me-2"></span>
+              Change Type
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

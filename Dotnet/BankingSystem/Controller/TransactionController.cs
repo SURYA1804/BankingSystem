@@ -33,6 +33,13 @@ namespace Controllers
             return Ok(transactions);
         }
 
+        [HttpGet("GetAllTransactionsByAccount")]
+        public async Task<IActionResult> GetAllTransactionsByAccount(long AccountNumber)
+        {
+            var transactions = await transactionService.GetAllTransactionByAccountAsync(AccountNumber);
+            return Ok(transactions);
+        }
+
 
     [HttpPost("ApproveTransaction")]
     public async Task<IActionResult> ApproveTransaction(int transactionId, int staffId, bool isApproved)

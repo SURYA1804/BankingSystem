@@ -1,0 +1,90 @@
+<div class="register-wrapper d-flex align-items-center justify-content-center">
+  <div class="glass-card">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary">Banking System</h2>
+      <p class="text-muted">Create Your Secure Profile For Account</p>
+    </div>
+
+    <form (ngSubmit)="onRegister()" #registerForm="ngForm" class="mt-4">
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Full Name</span>
+        <input type="text" class="form-control" 
+               [(ngModel)]="Register.name" name="name" required />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Username</span>
+        <input type="text" class="form-control" 
+               [(ngModel)]="Register.userName" name="userName" required />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Email</span>
+        <input type="email" class="form-control" 
+               [(ngModel)]="Register.email" name="email" required />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Password</span>
+        <input type="password" class="form-control" 
+               [(ngModel)]="Register.password" name="password" required />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Phone Number</span>
+        <input type="text" class="form-control" 
+               [(ngModel)]="Register.phoneNumber" name="phoneNumber" />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Address</span>
+        <input type="text" class="form-control" 
+               [(ngModel)]="Register.address" name="address" />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Customer Type</span>
+      <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Select</mat-label>
+          <mat-select [(value)]="Register.customerType">
+            <mat-option *ngFor="let type of customerTypes" [value]="type.customerTypeId">
+              {{ type.customerType }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Age</span>
+        <input type="number" class="form-control" 
+               [(ngModel)]="Register.age" name="age" />
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label fw-semibold">Date of Birth</span>
+        <input type="date" class="form-control" 
+               [(ngModel)]="Register.dob" name="dob" />
+      </div>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input"
+               [(ngModel)]="Register.isEmployed" name="isEmployed" />
+        <label class="form-check-label">Are You Employeed</label>
+      </div>
+
+      <button type="submit" class="btn btn-gradient w-100 py-2 fw-semibold"
+              [disabled]="!registerForm.valid">
+        Register
+      </button>
+    </form>
+
+    <div class="text-center mt-4">
+      <small class="text-muted">
+        Already have an account?
+        <a routerLink="/login" class="fw-bold text-primary text-decoration-none">Login</a>
+      </small>
+    </div>
+  </div>
+</div>

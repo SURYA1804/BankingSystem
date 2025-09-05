@@ -131,13 +131,15 @@ public class AccountService : IAccountService
         return mapper.Map<List<AccountDTO>>(result);
     }
 
-    public async Task<List<AccountModel>> GetAccountsByUserIdAsync(int userId)
+    public async Task<List<AccountDTO>> GetAccountsByUserIdAsync(int userId)
     {
-        return await context.DbAccount
+        var result = await context.DbAccount
             .Where(a => a.UserId == userId)
             .Include(a => a.User)
             .Include(a => a.AccountType)
             .ToListAsync();
+        return mapper.Map<List<AccountDTO>>(result);
+            
     }
 
 
