@@ -17,12 +17,25 @@ export interface AccountDTO {
   isActive: boolean;
   isAccountClosed: boolean;
 }
+export interface AccountUpdateTicketDTO {
+  ticketId: number;
+  accountNumber: number;
+  requestedChange: string;
+  requestedBy: string;
+  requestedAt: string;        
+  isApproved: boolean;
+  isProcessed: boolean;
+  approvedBy?: string | null;
+  approvedAt?: string | null;
+  rejectionReaosn?: string | null;
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private http = inject(HttpClient);
   private base = 'http://localhost:5139/api/v1/Account';
-
+  private basestaffurl = 'http://localhost:5139/api/v1/staff';
   createAccount(body: { userId: number; accountType: string; OpeningBalance: number;  }): Observable<ApiMessage> {
     return this.http.post<ApiMessage>(`${this.base}/CreateAccount`, body);
   }
@@ -48,4 +61,22 @@ export class AccountService {
     const params = new HttpParams().set('userId', String(userId));
     return this.http.get<AccountDTO[]>(`${this.base}/AccountByUser`, { params });
   }
+  reviewAccountTypeChange(ticketId: number, staffId: number, action: number, rejectionReason: string): Observable<string> {
+    const params = new HttpParams()
+      .set('ticketId', ticketId.toString())
+      .set('staffId', staffId.toString())
+      .set('action', action.toString())
+      .set('RejectionReaosn', rejectionReason ?? '');
+
+    return this.http.post(`${this.basestaffurl}/ReviewAccountTypeChange`, null, { responseType: 'text', params });
+  }
+
+  getAllAccountUpdateTickets(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.basestaffurl}/GetAllAccountUpdateTickets`);
+  }
+
+  getAllPendingAccountUpdateTickets(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.basestaffurl}/GetAllPendingAccountUpdateTickes`);
+  }
 }
+

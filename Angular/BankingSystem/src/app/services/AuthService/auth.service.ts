@@ -17,10 +17,7 @@ export class AuthService {
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/Login`, { userName:username,password: password })
   }
-  // GetUserDetail():Observable<any>
-  // {
-  //   return 
-  // }
+
 SetUser() {
     const userJson = localStorage.getItem('UserDetails');
     if (!userJson) {

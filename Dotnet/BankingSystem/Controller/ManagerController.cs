@@ -1,5 +1,6 @@
 using DTO;
 using interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -16,6 +17,7 @@ namespace Controllers
             this.managerService = managerService;
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost("create-staff")]
         public async Task<IActionResult> CreateStaff([FromBody] RegisterDTO registerDTO)
         {
@@ -29,5 +31,31 @@ namespace Controllers
 
             return Ok("Staff created successfully.");
         }
+
+        [Authorize(Roles = "Manager")]
+        [HttpGet("GetAllStaff")]
+        public async Task<IActionResult> GetAllStaff()
+        {
+            var staffs = await managerService.GetAllStaffAsync();
+            if (staffs == null)
+            {
+                return BadRequest();
+            }
+            return Ok(staffs);
+        }
+
+        [Authorize(Roles = "Manager")]
+
+        [HttpGet("GetAllUserActivity")]
+        public async Task<IActionResult> GetAllUserActivity()
+        {
+            var userActivity = await managerService.GetUserActivityAsync();
+            if (userActivity == null)
+            {
+                return NotFound();
+            }
+            return Ok(userActivity);
+        }
+
     }
 }

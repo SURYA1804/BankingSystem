@@ -97,6 +97,19 @@ public class CustomerSupportService : ICustomerSupportService
         return _mapper.Map<List<CustomerQueryDTO>>(result);
     }
 
+    public async Task<List<CustomerQueryDTO>> GetAllQueriesByUserAsync(int UserId)
+    {
+        var query = context.DbCustomerQuery
+            .Include(q => q.User)
+            .Include(q => q.queryType)
+            .Include(q => q.QueryComments)
+            .Include(q => q.QueryStatus)
+            .Include(q => q.QueryPriority)
+            .AsQueryable();
+        query = query.Where(q => q.User.UserId == UserId).OrderByDescending(m=> m.QueryPriority.QueryPriorityId);
+        var result = await query.ToListAsync();
+        return _mapper.Map<List<CustomerQueryDTO>>(result);
+    }
 
     public async Task<bool> MarkAsSolvedAsync(int queryId, int staffId)
     {

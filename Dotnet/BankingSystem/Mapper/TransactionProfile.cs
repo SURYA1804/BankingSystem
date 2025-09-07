@@ -19,6 +19,7 @@ public class TransactionProfile : Profile
                        opt => opt.MapFrom(src => src.ToAccount.AccountNumber))
             .ForMember(dest => dest.ToUser,
                        opt => opt.MapFrom(src => src.ToAccount.User.Name))
+
             .ForMember(dest => dest.ToEmail,
                        opt => opt.MapFrom(src => src.ToAccount.User.Email));
 

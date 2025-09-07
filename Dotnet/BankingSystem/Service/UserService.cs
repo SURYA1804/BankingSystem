@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using System.Runtime.InteropServices.JavaScript;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Service;
 
@@ -41,8 +42,9 @@ public class UserService : IUserService
     {
         try
         {
+            var hashedPassword = HassPassword.GetHashPassword(loginDTO.Password);
             var user = await context.DbUsers.Include(r=>r.Role).Include(t=>t.CustomerType)
-            .FirstAsync(m => m.UserName.ToLower() == loginDTO.UserName.ToLower());
+            .FirstAsync(m => m.UserName.ToLower() == loginDTO.UserName.ToLower() && m.Password == hashedPassword );
             if (user == null)
             {
                 return null;
@@ -185,7 +187,49 @@ public class UserService : IUserService
 
 
     }
+    public async Task<UsersModel?> GetUserByIdAsync(int userId)
+    {
+        return await context.DbUsers.FindAsync(userId);
+    }
+    public async Task<bool> UpdateUserAsync(int userId, JsonPatchDocument<UsersModel> patchDoc)
+    {
+        var user = await GetUserByIdAsync(userId);
+        if (user == null) return false;
 
+        patchDoc.ApplyTo(user);
+        
+        if (patchDoc.Operations.Any(op =>
+        (op.path.Equals("/Password", StringComparison.OrdinalIgnoreCase)
+             || op.path.Equals("Password", StringComparison.OrdinalIgnoreCase))
+                && !string.IsNullOrWhiteSpace(user.Password)))
+        {
+            user.Password = HassPassword.GetHashPassword(user.Password);
+        }
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+    public async Task<bool> CheckPasswordAsync(int userId, string password)
+    {
+        try
+        {
+            var user = await context.DbUsers.FirstAsync(m=>m.UserId == userId);
+            var hashpassword = HassPassword.GetHashPassword(password);
+            if (user.Password == hashpassword)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
     public async Task<string> VerifyOtpAsync(string email, int otp)
     {
         try

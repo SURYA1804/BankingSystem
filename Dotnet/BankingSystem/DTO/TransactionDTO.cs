@@ -4,7 +4,7 @@ public class TransactionDTO
 {
     public int TransactionId { get; set; }
 
-    public string?  ReferenceNumber { get; set; }
+    public string? ReferenceNumber { get; set; }
     public DateTime TransactionDate { get; set; }
     public bool IsVerificationRequired { get; set; }
     public bool IsSuccess { get; set; }
@@ -19,4 +19,5 @@ public class TransactionDTO
     public long ToAccount { get; set; }
     public string ToUser { get; set; } = string.Empty;
     public string ToEmail { get; set; } = string.Empty;
+    public decimal Amount { get; set; }
 }

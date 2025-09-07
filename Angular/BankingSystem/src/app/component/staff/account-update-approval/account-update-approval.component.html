@@ -1,0 +1,77 @@
+<div class="container py-3">
+  <div class="row">
+    <!-- Left: Pending Tickets -->
+    <div class="col-md-5">
+      <h4>Pending Account Update Tickets</h4>
+      <div *ngIf="loadingPending" class="mb-3">Loading pending tickets...</div>
+      <div *ngIf="!loadingPending && pendingTickets.length === 0" class="alert alert-secondary">No pending tickets.</div>
+
+      <div class="list-group mb-3">
+        <button
+          *ngFor="let t of pagedPendingTickets()"
+          class="list-group-item list-group-item-action"
+          (click)="review(t)"
+        >
+          Ticket #{{ t.ticketId }} • Requested change: {{ t.requestedChange }}<br />
+          Requested by: <b>{{ t.requestedBy }}</b> on {{ t.requestedAt | date: 'medium' }}<br />
+          Account #{{ t.accountNumber }}
+          <span *ngIf="t.isApproved" class="badge bg-success ms-2">Approved</span>
+          <span *ngIf="!t.isApproved && !t.isProcessed" class="badge bg-warning ms-2">Pending</span>
+          <span *ngIf="!t.isApproved && t.isProcessed" class="badge bg-danger ms-2">Rejected</span>
+        </button>
+      </div>
+
+      <!-- Pagination for Pending Tickets -->
+      <nav *ngIf="pendingTickets.length > pendingTicketsPageSize">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="pendingTicketsPage === 1">
+            <button class="page-link" (click)="setPendingTicketsPage(pendingTicketsPage - 1)" aria-label="Previous">&laquo;</button>
+          </li>
+          <li class="page-item" *ngFor="let page of pendingTicketsPages()" [class.active]="page === pendingTicketsPage">
+            <button class="page-link" (click)="setPendingTicketsPage(page)">{{ page }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="pendingTicketsPage === pendingTicketsTotalPages()">
+            <button class="page-link" (click)="setPendingTicketsPage(pendingTicketsPage + 1)" aria-label="Next">&raquo;</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Right: All Tickets -->
+    <div class="col-md-7">
+      <h4>All Account Update Tickets</h4>
+      <div *ngIf="loadingAll" class="mb-3">Loading all tickets...</div>
+      <div *ngIf="!loadingAll && allTickets.length === 0" class="alert alert-secondary">No tickets found.</div>
+
+      <div class="list-group mb-3">
+        <button
+          *ngFor="let t of pagedAllTickets()"
+          class="list-group-item list-group-item-action"
+          (click)="review(t)"
+        >
+          Ticket #{{ t.ticketId }} • Requested change: {{ t.requestedChange }}<br />
+          Requested by: <b>{{ t.requestedBy }}</b> on {{ t.requestedAt | date: 'medium' }}<br />
+          Account #{{ t.accountNumber }}
+          <span *ngIf="t.isApproved" class="badge bg-success ms-2">Approved</span>
+          <span *ngIf="!t.isApproved && !t.isProcessed" class="badge bg-warning ms-2">Pending</span>
+          <span *ngIf="!t.isApproved && t.isProcessed" class="badge bg-danger ms-2">Rejected</span>
+        </button>
+      </div>
+
+      <!-- Pagination for All Tickets -->
+      <nav *ngIf="allTickets.length > allTicketsPageSize">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="allTicketsPage === 1">
+            <button class="page-link" (click)="setAllTicketsPage(allTicketsPage - 1)" aria-label="Previous">&laquo;</button>
+          </li>
+          <li class="page-item" *ngFor="let page of allTicketsPages()" [class.active]="page === allTicketsPage">
+            <button class="page-link" (click)="setAllTicketsPage(page)">{{ page }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="allTicketsPage === allTicketsTotalPages()">
+            <button class="page-link" (click)="setAllTicketsPage(allTicketsPage + 1)" aria-label="Next">&raquo;</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

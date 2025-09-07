@@ -41,6 +41,8 @@ public class UsersModel
 
     public DateOnly CreatedAt { get; set; }
     public DateTime LastLoginAt { get; set; }
-    
+
     public bool IsVerified { get; set; }
+    public ICollection<AccountModel>? Account { get; set; }
+
 }

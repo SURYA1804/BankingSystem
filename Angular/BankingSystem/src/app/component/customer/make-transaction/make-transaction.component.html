@@ -1,6 +1,5 @@
 <div class="container py-4">
   <div class="card border-0 shadow-premium overflow-hidden premium-gradient">
-    <!-- Header -->
     <div class="px-4 py-3 d-flex align-items-center justify-content-between premium-header">
       <div class="d-flex align-items-center gap-2">
         <span class="premium-icon-wrap">
@@ -13,17 +12,22 @@
 
     <div class="card-body p-4 bg-white">
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <!-- From Account -->
-        <div class="mb-3">
-          <label class="form-label fw-semibold">From Account</label>
-          <div class="input-group">
-            <span class="input-group-text premium-addon"><i class="bi bi-arrow-up-right-circle"></i></span>
-            <input type="number" class="form-control" formControlName="fromAccount" placeholder="Enter source account number">
-          </div>
-          <div class="invalid-feedback d-block" *ngIf="form.controls.fromAccount.invalid && form.controls.fromAccount.touched">
-            Enter a valid account number.
-          </div>
-        </div>
+  <div class="mb-3">
+  <label class="form-label fw-semibold">From Account</label>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>From Account</mat-label>
+    <mat-select formControlName="fromAccount" required>
+      <mat-option value="" disabled>Select</mat-option>
+      <mat-option *ngFor="let a of fromAccounts" [value]="a.accountNumber">
+        {{ a.accountNumber }} — {{ a.accountTypeName }} (₹{{ a.balance | number:'1.2-2' }})
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.controls.fromAccount.invalid && form.controls.fromAccount.touched">
+      Select a valid account
+    </mat-error>
+  </mat-form-field>
+</div>
+
 
         <!-- To Account -->
         <div class="mb-3">
@@ -40,19 +44,22 @@
         <!-- Transaction Type -->
         <div class="mb-3">
           <label class="form-label fw-semibold">Transaction Type</label>
-          <div class="input-group">
-            <span class="input-group-text premium-addon"><i class="bi bi-repeat"></i></span>
-            <select class="form-select" formControlName="transactionTypeId" required>
-              <option value="" disabled selected>Select</option>
-              <option *ngFor="let t of transactionTypes" [value]="t.id">{{ t.name }}</option>
-            </select>
-          </div>
-          <div class="invalid-feedback d-block" *ngIf="form.controls.transactionTypeId.invalid && form.controls.transactionTypeId.touched">
-            Select a transaction type.
-          </div>
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>Transaction Type</mat-label>
+              <mat-select formControlName="transactionTypeId" required>
+                <mat-option value="" disabled>Select</mat-option>
+                <mat-option *ngFor="let t of transactionTypes" [value]="t.id">
+                  {{ t.name }}
+                </mat-option>
+              </mat-select>
+
+              <mat-error *ngIf="form.controls.transactionTypeId.invalid && form.controls.transactionTypeId.touched">
+                Select a transaction type.
+              </mat-error>
+            </mat-form-field>
+
         </div>
 
-        <!-- Amount -->
         <div class="mb-4">
           <label class="form-label fw-semibold">Amount</label>
           <div class="input-group">

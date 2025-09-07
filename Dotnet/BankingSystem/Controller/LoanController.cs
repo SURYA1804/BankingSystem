@@ -1,5 +1,6 @@
 using DTO;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers;
@@ -15,6 +16,7 @@ public class LoanController : ControllerBase
         this.loanService = loanService;
     }
 
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreateLoan([FromBody] CreateLoanDTO createLoanDTO)
     {
@@ -24,16 +26,18 @@ public class LoanController : ControllerBase
         return BadRequest(result);
     }
 
+    [Authorize(Roles="staff")]
     [HttpPost("approve")]
-    public async Task<IActionResult> ApproveLoan([FromQuery] int loanId, [FromQuery] int staffId, [FromQuery] bool isApproved)
+    public async Task<IActionResult> ApproveLoan([FromQuery] int loanId, [FromQuery] int staffId, [FromQuery] bool isApproved,[FromQuery] string reason)
     {
-        var result = await loanService.ApproveLoanAsync(loanId, staffId, isApproved);
+        var result = await loanService.ApproveLoanAsync(loanId, staffId, isApproved,reason);
         if (result.Contains("failed") || result.Contains("not found"))
             return BadRequest(result);
 
         return Ok(result);
     }
 
+    [Authorize(Policy = "StaffOrManager")]
     [HttpGet("GetAllLoans")]
     public async Task<IActionResult> GetAllLoans()
     {
@@ -44,6 +48,16 @@ public class LoanController : ControllerBase
         return Ok(loans);
     }
 
+    [Authorize]
+    [HttpGet("GetMyLoans")]
+    public async Task<IActionResult> GetMyLoans(int UserId)
+    {
+        var loans = await loanService.GetAllLoansByUserAsync(UserId);
+         if (loans == null || !loans.Any())
+            return NotFound("No  loan requests found.");
+
+        return Ok(loans);
+    }
     [HttpGet("pending-approvals")]
     public async Task<IActionResult> GetAllLoansToApprove()
     {

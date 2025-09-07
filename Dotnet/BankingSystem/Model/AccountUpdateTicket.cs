@@ -13,10 +13,10 @@ public class AccountUpdateTicket
     public AccountModel? Account { get; set; }
 
     [Required]
-    public string RequestedChange { get; set; } = string.Empty; 
+    public string RequestedChange { get; set; } = string.Empty;
 
     [Required]
-    public string RequestedBy { get; set; } = string.Empty; 
+    public string RequestedBy { get; set; } = string.Empty;
 
     [Required]
     public DateTime RequestedAt { get; set; } = IndianTime.GetIndianTime();
@@ -26,4 +26,6 @@ public class AccountUpdateTicket
 
     public string? ApprovedBy { get; set; }
     public DateTime? ApprovedAt { get; set; }
+    
+    public string? RejectionReason { get; set; }
 }

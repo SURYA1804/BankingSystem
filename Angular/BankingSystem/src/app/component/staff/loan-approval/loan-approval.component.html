@@ -1,0 +1,85 @@
+<div class="container py-3">
+  <h3 class="fw-bold text-white mb-3">Loan Approvals</h3>
+
+  <div *ngIf="loading" class="alert alert-info">Loading...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="table-responsive" *ngIf="!loading && !error">
+    <table class="table table-primary table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Loan #</th>
+          <th>User</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Salary (LPA)</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let loan of items">
+          <td>{{ loan.id }}</td>
+          <td>
+            <div>{{ loan.userName || ('User ' + loan.userId) }}</div>
+            <small class="text-muted">UserID: {{ loan.userId }}</small>
+          </td>
+          <td>{{ loan.loanTypeName || loan.loanTypeId }}</td>
+          <td>{{ loan.loanAmount | number:'1.0-2' }}</td>
+          <td>{{ loan.currentSalaryInLPA | number:'1.0-2' }}</td>
+          <td>{{ loan.createdAt | date:'short' }}</td>
+          <td>
+            <span class="badge" [ngClass]="loan.isApproved ? 'text-bg-primary' : 'text-bg-info'">
+              {{ loan.isApproved  ? 'Approved' : 'Pending' }}
+            </span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary" (click)="openDetail(loan)">Open</button>
+          </td>
+        </tr>
+        <tr *ngIf="items.length === 0">
+          <td colspan="8" class="text-center text-muted py-4">No pending loan requests.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Detail Modal (blue skin via CSS variables if you added modal-blue class globally) -->
+<div class="modal fade show modal-blue" tabindex="-1" style="display:block; background: rgba(0,0,0,0.6);" *ngIf="showDetail && selected">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Loan Detail — {{ selected?.id }}
+        </h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeDetail()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div><strong>User:</strong> {{ selected?.userName || ('User ' + selected?.userId) }}</div>
+            <div><strong>Type:</strong> {{ selected?.loanTypeName || selected?.loanTypeId }}</div>
+            <div><strong>Created:</strong> {{ selected?.createdAt | date:'medium' }}</div>
+          </div>
+          <div class="col-md-6">
+            <div><strong>Amount:</strong> {{ selected?.loanAmount | number:'1.0-2' }}</div>
+            <div><strong>Salary (LPA):</strong> {{ selected?.currentSalaryInLPA | number:'1.0-2' }}</div>
+            <div><strong>Status:</strong>
+              <span class="badge" [ngClass]="selected?.isApproved ? 'text-bg-primary' : 'text-bg-info'">
+                {{ selected?.isApproved ? 'Approved' : 'Pending' }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="submitError" class="alert alert-info mt-3">{{ submitError }}</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-primary" (click)="closeDetail()" [disabled]="submitting">Close</button>
+        <button class="btn btn-outline-info" (click)="reject()" [disabled]="submitting">Reject</button>
+        <button class="btn btn-primary" (click)="approve()" [disabled]="submitting">Approve</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -8,7 +8,7 @@ using MyDbContext;
 
 namespace Service;
 
-public class LoanService:ILoanService
+public class LoanService : ILoanService
 {
     private readonly MyAppDbContext context;
     private readonly IMapper mapper;
@@ -35,6 +35,7 @@ public class LoanService:ILoanService
                 UserId = createLoanDTO.UserId,
                 LoanTypeId = createLoanDTO.LoanTypeId,
                 CurrentSalaryInLPA = createLoanDTO.CurrentSalaryInLPA,
+                LoanAmount = createLoanDTO.LoanAmount,
                 CreatedAt = IndianTime.GetIndianTime(),
                 IsApproved = false
             };
@@ -50,7 +51,7 @@ public class LoanService:ILoanService
             return "Failed to create loan request.";
         }
     }
-    public async Task<string> ApproveLoanAsync(int loanId, int staffId, bool isApproved)
+    public async Task<string> ApproveLoanAsync(int loanId, int staffId, bool isApproved,string reason)
     {
         using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -68,8 +69,9 @@ public class LoanService:ILoanService
 
             loan.IsApproved = isApproved;
             loan.ApprovedBy = staffId;
+            loan.RejectionReason = reason;
             loan.ApprovedAt = IndianTime.GetIndianTime();
-
+            loan.isProcessed = true;
             context.DbLoan.Update(loan);
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
@@ -90,18 +92,32 @@ public class LoanService:ILoanService
             .Include(l => l.LoanType)
             .OrderByDescending(l => l.CreatedAt)
             .ToListAsync();
-        
+
         return mapper.Map<List<LoanDTO>>(result);
 
     }
+    public async Task<List<LoanDTO>> GetAllLoansByUserAsync(int userId)
+    {
+        var result = await context.DbLoan
+            .Include(l => l.User).ThenInclude(l => l.CustomerType)
+            .Include(l => l.LoanType)
+            .Where(u=>u.UserId == userId)
+            .OrderByDescending(l => l.CreatedAt)
+            .ToListAsync();
+
+        return mapper.Map<List<LoanDTO>>(result);
+
+    }
+
     public async Task<List<LoanDTO>> GetAllLoansToApproveAsync()
     {
         var result = await context.DbLoan
             .Include(l => l.User).ThenInclude(l => l.CustomerType)
             .Include(l => l.LoanType)
-            .Where(l => !l.IsApproved)
+            .Where(l => !l.IsApproved  && !l.isProcessed)
             .OrderBy(l => l.CreatedAt)
             .ToListAsync();
         return mapper.Map<List<LoanDTO>>(result);
     }
+    
 }

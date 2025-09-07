@@ -1,0 +1,62 @@
+<form [formGroup]="updateForm" (ngSubmit)="onSubmit()" class="p-3 border rounded" novalidate>
+
+  <div class="mb-3">
+    <label for="fieldSelect" class="form-label">Select field to update</label>
+    <mat-form-field appearance="fill" class="w-100">
+      <mat-label>Select field to update</mat-label>
+      <mat-select (selectionChange)="onFieldChange($event)">
+        <mat-option value="" disabled>Select a field</mat-option>
+        <mat-option value="name">Name</mat-option>
+        <mat-option value="userName">Username</mat-option>
+        <mat-option value="dob">Date of Birth</mat-option>
+        <mat-option value="age">Age</mat-option>
+        <mat-option value="password">Password</mat-option>
+        <mat-option value="email">Email</mat-option>
+        <mat-option value="phoneNumber">Phone Number</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="selectedField === 'name'" class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input id="name" formControlName="name" class="form-control" placeholder="Enter Name" />
+  </div>
+
+  <div *ngIf="selectedField === 'userName'" class="mb-3">
+    <label for="userName" class="form-label">Username</label>
+    <input id="userName" formControlName="userName" class="form-control" placeholder="Enter Username" />
+  </div>
+
+  <div *ngIf="selectedField === 'dob'" class="mb-3">
+    <label for="dob" class="form-label">Date of Birth</label>
+    <input id="dob" type="date" formControlName="dob" class="form-control" />
+  </div>
+
+  <div *ngIf="selectedField === 'age'" class="mb-3">
+    <label for="age" class="form-label">Age</label>
+    <input id="age" type="number" formControlName="age" class="form-control" placeholder="Enter Age" />
+  </div>
+
+<div *ngIf="selectedField === 'password'" class="mb-3">
+  <label for="oldPassword" class="form-label">Old Password</label>
+  <input id="oldPassword" type="password" formControlName="oldPassword" class="form-control" placeholder="Enter Old Password" />
+</div>
+
+<div *ngIf="selectedField === 'password'" class="mb-3">
+  <label for="password" class="form-label">New Password</label>
+  <input id="password" type="password" formControlName="password" class="form-control" placeholder="Enter New Password" />
+</div>
+
+  <div *ngIf="selectedField === 'email'" class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input id="email" type="email" formControlName="email" class="form-control" placeholder="Enter Email" />
+  </div>
+
+  <div *ngIf="selectedField === 'phoneNumber'" class="mb-3">
+    <label for="phoneNumber" class="form-label">Phone Number</label>
+    <input id="phoneNumber" formControlName="phoneNumber" class="form-control" placeholder="Enter Phone Number" />
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="!selectedField">Update Profile</button>
+
+</form>

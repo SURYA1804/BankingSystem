@@ -31,7 +31,6 @@
 
 .btn-light:hover { background-color: #fff; color: #1b3566; }
 
-/* Card and header */
 .premium-gradient {
   background: linear-gradient(135deg, #1f3b7a 0%, #2948a0 50%, #1b2a4b 100%);
 }
@@ -45,7 +44,6 @@
   overflow: hidden;
 }
 
-/* Icon in header */
 .premium-icon-wrap {
   display: inline-flex;
   align-items: center;
@@ -58,7 +56,6 @@
   font-size: 18px;
 }
 
-/* List item */
 .premium-item:hover {
   background: #f8faff;
 }
@@ -77,7 +74,6 @@
   font-weight: 600;
 }
 
-/* Chips */
 .chip {
   display: inline-block;
   padding: 6px 10px;
@@ -90,7 +86,6 @@
 .chip-danger { background: #fdecec; color: #b02a37; }
 .chip-neutral { background: #eef1f4; color: #475569; }
 
-/* Empty state */
 .premium-empty-icon {
   width: 52px;
   height: 52px;

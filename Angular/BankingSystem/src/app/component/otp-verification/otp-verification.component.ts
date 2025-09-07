@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 interface IUser {
   name: string;
   email: string;
-  roleName: string; // Make sure backend returns this
+  roleName: string; 
   [key: string]: any;
 }
 
@@ -103,15 +103,16 @@ export class OtpVerificationComponent implements OnInit {
           text: res.message,
           confirmButtonColor: '#0d6efd'
         }).then(() => {
+          localStorage.setItem("IsOTPVerified","true");
           switch (this.user.roleName) {
             case 'admin':
-              this.router.navigate(['/admin-dashboard']);
+              this.router.navigate(['/admin/dashboard']);
               break;
             case 'customer':
-              this.router.navigate(['/customer-dashboard']);
+              this.router.navigate(['/customer/dashboard']);
               break;
             case 'staff':
-              this.router.navigate(['/staff-dashboard']);
+              this.router.navigate(['/staff/dashboard']);
               break;
             default:
               this.router.navigate(['/dashboard']);

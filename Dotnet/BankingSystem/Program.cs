@@ -79,8 +79,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
-
+builder.Services.AddAuthorization(o =>
+{
+    o.AddPolicy("StaffOrManager", p => p.RequireRole("staff","Manager"));
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowPolicy",

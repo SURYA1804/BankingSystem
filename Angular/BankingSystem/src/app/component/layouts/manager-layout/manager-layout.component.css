@@ -1,0 +1,59 @@
+.premium-navbar {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 15px 0;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg,#4fc4fe, #e8f3f0e0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-link-premium {
+  color: #fff !important;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+}
+
+.nav-link-premium::after {
+  content: "";
+  display: block;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  transition: width 0.3s ease;
+  margin: auto;
+}
+
+.nav-link-premium:hover::after {
+  width: 100%;
+}
+
+.nav-link-premium:hover {
+  color: #00f2fe !important;
+}
+
+.premium-footer {
+  background: linear-gradient(135deg, #0d6efd, #1e3c72, #2a5298);
+  color: #fff;
+  padding: 15px 0;
+  margin-top: auto;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+}
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #557bc2, #749ee7);
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1 0 auto;
+}

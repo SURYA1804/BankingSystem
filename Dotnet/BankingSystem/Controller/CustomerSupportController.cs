@@ -1,5 +1,6 @@
 using DTO;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Service;
@@ -16,7 +17,8 @@ public class CustomerSupportController : ControllerBase
     {
         this.customerSupportService = customerSupportService;
     }
-
+    
+    [Authorize]
     [HttpPost("CreateQuery")]
     public async Task<IActionResult> CreateQuery(RaiseTicketDTO raiseTicketDTO)
     {
@@ -28,6 +30,7 @@ public class CustomerSupportController : ControllerBase
         return BadRequest("Not Created");
     }
 
+    [Authorize]
     [HttpPost("AddComment")]
     public async Task<IActionResult> AddComment(AddCommentsDTO addCommentsDTO)
     {
@@ -37,6 +40,7 @@ public class CustomerSupportController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles ="staff")]
     [HttpGet("GetAllPendingQueries")]
     public async Task<IActionResult> GetAllPendingQueries()
     {
@@ -48,6 +52,19 @@ public class CustomerSupportController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
+    [HttpGet("GetAllQueriesByUser")]
+    public async Task<IActionResult> GetAllQueriesByUser(int UserId)
+    {
+        var result = await customerSupportService.GetAllQueriesByUserAsync(UserId);
+        if (result == null || result.Count == 0)
+        {
+            return NotFound("No Queries Left");
+        }
+        return Ok(result);
+    }
+
+    [Authorize]
     [HttpPost("MarkQueryClosed")]
     public async Task<IActionResult> SolveQuery(int queryId, int staffId)
     {

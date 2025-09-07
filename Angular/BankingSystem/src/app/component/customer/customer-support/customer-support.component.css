@@ -1,0 +1,21 @@
+.list-group-item { padding-top: .85rem; padding-bottom: .85rem }
+.card-header, .card-footer { padding-top: 1rem!important; padding-bottom: .75rem!important }
+.list-group-item:hover { background: rgba(0,0,0,.02) }
+.badge.rounded-pill { padding: .35rem .6rem; font-weight: 600; letter-spacing: .2px }
+/* Solid background and stacking for the list card header */
+.card > .card-header {
+  background-color: #fff !important;
+  z-index: 1;
+}
+
+/* Ensure readable title spacing and contrast */
+.card > .card-header h5 {
+  line-height: 1.25;
+  color: #0b1526; /* dark text */
+}
+
+/* If a global translucent overlay or gradient sits above content, push the card ahead */
+.card.border-0.shadow.rounded-4 {
+  position: relative;
+  z-index: 2;
+}

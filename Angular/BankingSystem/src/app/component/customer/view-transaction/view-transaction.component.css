@@ -1,0 +1,7 @@
+.list-group-item{padding-top:.85rem;padding-bottom:.85rem}
+.list-group-item .text-end{min-width:180px}
+.list-group-item:hover{background:rgba(0,0,0,.02)}
+.card-header,.card-footer{padding-top:1rem!important;padding-bottom:.75rem!important}
+.badge.rounded-pill{padding:.35rem .6rem;font-weight:600;letter-spacing:.2px;transform:translateZ(0)}
+.min-w-0{min-width:0}
+.form-select.form-select-sm{padding-top:.25rem;padding-bottom:.25rem;height:calc(1.5em + .5rem + 2px)}

@@ -121,7 +121,7 @@ namespace Service
         }
 
 
-        public async Task<string> ApproveTransactionAsync(int transactionId, int staffId, bool isApproved)
+        public async Task<string> ApproveTransactionAsync(int transactionId,string reason, int staffId, bool isApproved)
         {
             using var transaction = await context.Database.BeginTransactionAsync();
             try
@@ -144,11 +144,11 @@ namespace Service
                 {
                     txn.IsVerificationRequired = false;
                     txn.IsSuccess = false;
-                    txn.ErrorMessage = "Transaction rejected by staff.";
+                    txn.ErrorMessage = reason;
                 }
                 else
                 {
-                    if (txn.FromAccount.Balance < 0)
+                    if (txn.FromAccount.Balance < txn.Amount)
                         return "Insufficient balance.";
 
                     txn.FromAccount.Balance -= (int)txn.Amount;

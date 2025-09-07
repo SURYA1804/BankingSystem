@@ -1,7 +1,10 @@
 using DTO;
 using interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Model;
 using Service;
 
 namespace Controllers
@@ -13,7 +16,7 @@ namespace Controllers
         private readonly IUserService userService;
         private readonly IAuthService authService;
 
-        public UsersController(IUserService userService,IAuthService authService)
+        public UsersController(IUserService userService, IAuthService authService)
         {
             this.userService = userService;
             this.authService = authService;
@@ -35,6 +38,7 @@ namespace Controllers
                 new { message = "Registration successful. Please check your email for OTP." });
         }
 
+        [Authorize]
         [HttpGet("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromQuery] string email, [FromQuery] int otp)
         {
@@ -60,6 +64,7 @@ namespace Controllers
             return Ok(new { message = "Email verified successfully!" });
         }
 
+        [Authorize]
         [HttpGet("Get-OTP")]
 
         public async Task<IActionResult> GetOTP([FromQuery] string email)
@@ -95,5 +100,50 @@ namespace Controllers
             }
 
         }
+
+        [Authorize]
+        [HttpPatch("UpdateUserProfile")]
+        public async Task<IActionResult> PatchUser(int userId, [FromBody] JsonPatchDocument<UsersModel> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest("Patch document cannot be null");
+            }
+
+            var user = await userService.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+
+            if (!TryValidateModel(user))
+            {
+                return BadRequest(ModelState);
+            }
+
+            patchDoc.ApplyTo(user, ModelState);
+            
+            await userService.UpdateUserAsync(userId, patchDoc);
+
+            return Ok();
+        }
+
+        [Authorize]
+
+        [HttpGet("CheckPassword")]
+        public async Task<IActionResult> CheckPassword(int userId, string password)
+        {
+            var result = await userService.CheckPasswordAsync(userId, password);
+            if (result)
+            {
+                return Ok("true");
+            }
+            else
+            {
+                return BadRequest("Password Incorrect");
+            }
+        }
+
     }
 }

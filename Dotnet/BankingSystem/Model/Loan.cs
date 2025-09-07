@@ -23,7 +23,12 @@ public class LoanModel
     public DateTime? ApprovedAt { get; set; }
 
     public int ApprovedBy { get; set; }
-    
+
+    public int LoanAmount { get; set; }
+
     public int CurrentSalaryInLPA { get; set; }
-    
+
+    public string? RejectionReason { get; set; }
+
+    public bool isProcessed { get; set; } = false;
 }

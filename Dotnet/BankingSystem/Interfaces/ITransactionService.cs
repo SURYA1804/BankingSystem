@@ -9,7 +9,7 @@ public interface ITransactionService
 
     Task<List<TransactionDTO>> GetAllTransactionsToApproveAsync();
 
-    Task<string> ApproveTransactionAsync(int transactionId, int staffId, bool isApproved);
+    Task<string> ApproveTransactionAsync(int transactionId,string reason, int staffId, bool isApproved);
 
     Task<List<TransactionDTO>> GetAllTransactionByAccountAsync(long AccountNumber);
     

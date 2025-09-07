@@ -1,5 +1,6 @@
 using DTO;
 using interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
@@ -15,7 +16,8 @@ public class AccountController : ControllerBase
     {
         this.accountService = accountService;
     }
-
+    
+    [Authorize]
     [HttpPost("CreateAccount")]
     public async Task<IActionResult> CreateAccount([FromBody] AccountCreationDTO accountCreationDTO)
     {
@@ -27,6 +29,7 @@ public class AccountController : ControllerBase
         return BadRequest(new { message = result });
     }
 
+    [Authorize]
     [HttpPost("request-change")]
     public async Task<IActionResult> RequestAccountTypeChange(long accountNumber, string newAccountType, int userId)
     {
@@ -37,6 +40,7 @@ public class AccountController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize]
     [HttpPost("CloseAccount")]
     public async Task<IActionResult> CloseAccount(long accountNumber)
     {
@@ -47,6 +51,7 @@ public class AccountController : ControllerBase
         return BadRequest(new { message = result });
     }
 
+    [Authorize]
     [HttpGet("AllAccount")]
     public async Task<IActionResult> GetAllAccounts()
     {
@@ -54,6 +59,7 @@ public class AccountController : ControllerBase
         return Ok(accounts);
     }
 
+    [Authorize]
     [HttpGet("AccountByUser")]
     public async Task<IActionResult> GetAccountsByUserId(int userId)
     {

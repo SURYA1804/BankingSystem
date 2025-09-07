@@ -1,0 +1,117 @@
+<div class="container py-3">
+  <h3 class="fw-bold text-white mb-3">High-Value Transactions</h3>
+
+  <div *ngIf="loading" class="alert alert-info">Loading...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="table-responsive" *ngIf="!loading && !error">
+    <table class="table table-primary table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Needs Verify</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tx of items">
+          <td>{{ tx.referenceNumber || '-' }}</td>
+          <td>{{ tx.transactionDate | date:'short' }}</td>
+          <td>{{ tx.transactionType }}</td>
+          <td>
+            <div>{{ tx.fromUser }} ({{ tx.fromEmail }})</div>
+            <small class="text-muted">Acct: {{ tx.fromAccount }}</small>
+          </td>
+          <td>
+            <div>{{ tx.toUser }} ({{ tx.toEmail }})</div>
+            <small class="text-muted">Acct: {{ tx.toAccount }}</small>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="tx.isVerificationRequired ? 'text-bg-primary' : 'text-bg-secondary'">
+              {{ tx.isVerificationRequired ? 'Yes' : 'No' }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="tx.isSuccess ? 'text-bg-primary' : 'text-bg-info'">
+              {{ tx.isSuccess ? 'Success' : 'Pending' }}
+            </span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-outline-primary" (click)="openDetail(tx)">Open</button>
+          </td>
+        </tr>
+        <tr *ngIf="items.length === 0">
+          <td colspan="8" class="text-center text-muted py-4">No transactions awaiting approval.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade show modal-blue" tabindex="-1" style="display:block; background: rgba(0,0,0,0.6);" *ngIf="showDetail && selected">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Transaction Detail — {{ selected?.referenceNumber || selected?.transactionId }}
+        </h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeDetail()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row mb-2">
+          <div class="col-md-6">
+            <div><strong>Date:</strong> {{ selected?.transactionDate | date:'medium' }}</div>
+            <div><strong>Type:</strong> {{ selected?.transactionType }}</div>
+            <div><strong>Needs Verification:</strong>
+              <span class="badge" [ngClass]="selected?.isVerificationRequired ? 'text-bg-primary' : 'text-bg-secondary'">
+                {{ selected?.isVerificationRequired ? 'Yes' : 'No' }}
+              </span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div><strong>Status:</strong>
+              <span class="badge" [ngClass]="selected?.isSuccess ? 'text-bg-primary' : 'text-bg-info'">
+                {{ selected?.isSuccess ? 'Success' : 'Pending' }}
+              </span>
+            </div>
+            <div *ngIf="selected?.errorMessage"><strong>Error:</strong> {{ selected?.errorMessage }}</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+            <div><strong>Amount:</strong>
+              {{selected?.amount  | currency:'INR'}}
+              </div>
+         </div>     
+
+        <hr class="border-light">
+
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="fw-bold">From</h6>
+            <div>{{ selected?.fromUser }} ({{ selected?.fromEmail }})</div>
+            <div>Account: {{ selected?.fromAccount }}</div>
+          </div>
+          <div class="col-md-6">
+            <h6 class="fw-bold">To</h6>
+            <div>{{ selected?.toUser }} ({{ selected?.toEmail }})</div>
+            <div>Account: {{ selected?.toAccount }}</div>
+          </div>
+        </div>
+
+        <div *ngIf="submitError" class="alert alert-info mt-3">{{ submitError }}</div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-light" (click)="closeDetail()" [disabled]="submitting">Close</button>
+        <button class="btn btn-outline-info" (click)="reject()" [disabled]="submitting">Reject</button>
+        <button class="btn btn-light text-primary" (click)="approve()" [disabled]="submitting">Approve</button>
+      </div>
+    </div>
+  </div>
+</div>

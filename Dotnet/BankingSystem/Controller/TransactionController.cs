@@ -3,6 +3,7 @@ using Service;
 using Model;
 using interfaces;
 using DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Controllers
 {
@@ -17,6 +18,7 @@ namespace Controllers
             this.transactionService = transactionService;
         }
 
+        [Authorize]
         [HttpPost("MakeTransaction")]
         public async Task<IActionResult> MakeTransaction(MakeTransactionDTO makeTransactionDTO)
         {
@@ -26,6 +28,8 @@ namespace Controllers
 
             return Ok(result);
         }
+        
+        [Authorize(Roles = "staff")]
         [HttpGet("GetAllTransactionsToApprove")]
         public async Task<IActionResult> GetAllTransactionsToApprove()
         {
@@ -33,6 +37,7 @@ namespace Controllers
             return Ok(transactions);
         }
 
+        [Authorize]
         [HttpGet("GetAllTransactionsByAccount")]
         public async Task<IActionResult> GetAllTransactionsByAccount(long AccountNumber)
         {
@@ -40,13 +45,17 @@ namespace Controllers
             return Ok(transactions);
         }
 
-
+    [Authorize(Roles="staff")]
     [HttpPost("ApproveTransaction")]
-    public async Task<IActionResult> ApproveTransaction(int transactionId, int staffId, bool isApproved)
+    public async Task<IActionResult> ApproveTransaction(int transactionId,string reason, int staffId, bool isApproved)
     {
-        var result = await transactionService.ApproveTransactionAsync(transactionId, staffId, isApproved);
+        var result = await transactionService.ApproveTransactionAsync(transactionId, reason,staffId, isApproved);
 
-        if (result.StartsWith("Approval failed") || result.Contains("not found") || result.Contains("rejected"))
+        if (result == "Transaction rejected.")
+            {
+                return Ok(result);
+            }
+        if (result !="Transaction approved successfully.")
             return BadRequest(result);
 
         return Ok(result);

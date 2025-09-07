@@ -3,12 +3,10 @@
 
 <div class="account-mgmt container py-4">
   <h2 class="mb-4 fw-bold text-white">Account Management</h2>
-  <!-- User Accounts -->
 <div class="row mb-4">
   <div class="col-12">
     <div class="card border-0 shadow-premium overflow-hidden premium-gradient">
       <div class="card-body p-0">
-        <!-- Header -->
         <div class="px-4 py-3 d-flex align-items-center justify-content-between premium-header">
           <div class="d-flex align-items-center gap-2">
             <span class="premium-icon-wrap">
@@ -23,18 +21,15 @@
 
         </div>
 
-        <!-- Loading -->
         <div *ngIf="accountsLoading" class="d-flex align-items-center gap-2 px-4 py-4 bg-white">
           <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
           <span class="text-muted">Fetching latest balances...</span>
         </div>
 
-        <!-- Error -->
         <div *ngIf="!accountsLoading && accountsError" class="alert alert-danger m-4">
           {{ accountsError }}
         </div>
 
-        <!-- Accounts List -->
         <div *ngIf="!accountsLoading && !accountsError && accounts.length" class="list-group list-group-flush">
           <div
             *ngFor="let a of accounts"
@@ -76,7 +71,6 @@
           </div>
         </div>
 
-        <!-- Empty State -->
         <div *ngIf="!accountsLoading && !accountsError && !accounts.length" class="px-4 py-5 bg-white text-center">
           <div class="premium-empty-icon mx-auto mb-2">
             <i class="bi bi-inboxes"></i>

@@ -1,5 +1,6 @@
 using AutoMapper;
 using interfaces;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Model.DTOs;
@@ -18,7 +19,7 @@ public class StaffService : IStaffService
         this.mapper = mapper;
     }
 
-    public async Task<string> ReviewAccountTypeChangeAsync(int ticketId, int staffId, int action)
+    public async Task<string> ReviewAccountTypeChangeAsync(int ticketId, int staffId, int action,string RejectionReason)
     {
         var ticket = await context.DbAccountUpdateTickets
             .Include(t => t.Account)
@@ -48,6 +49,7 @@ public class StaffService : IStaffService
 
             ticket.IsApproved = true;
             ticket.IsProcessed = true;
+            ticket.RejectionReason = "";
             ticket.ApprovedBy = staffId.ToString();
             ticket.ApprovedAt = IndianTime.GetIndianTime();
 
@@ -61,6 +63,7 @@ public class StaffService : IStaffService
         {
             ticket.IsApproved = false;
             ticket.IsProcessed = true;
+            ticket.RejectionReason = RejectionReason;
             ticket.ApprovedBy = staffId.ToString();
             ticket.ApprovedAt = IndianTime.GetIndianTime();
 
@@ -86,7 +89,7 @@ public class StaffService : IStaffService
 
     public async Task<List<AccountUpdateTicketDTO>> GetALlPendingAccountUpdateTicketAsync()
     {
-        var ticket = await context.DbAccountUpdateTickets.Where(x => x.IsProcessed == true).ToListAsync();
+        var ticket = await context.DbAccountUpdateTickets.Where(x => x.IsProcessed == false).ToListAsync();
         if (ticket == null)
         {
             return null;

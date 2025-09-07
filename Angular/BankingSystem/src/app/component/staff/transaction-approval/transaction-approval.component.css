@@ -1,0 +1,30 @@
+:root {
+  --bs-primary: #1e6bd6;        
+  --bs-primary-rgb: 30,107,214;
+}
+.modal-blue .modal-content {
+  --bs-modal-bg: #3a77d8;                 
+  --bs-modal-color: #eaf2ff;              
+  --bs-modal-border-color: rgba(255,255,255,0.15); 
+  --bs-modal-header-border-color: rgba(255,255,255,0.15); 
+  --bs-modal-footer-border-color: rgba(255,255,255,0.15); 
+
+  background-color: var(--bs-modal-bg);   
+  color: var(--bs-modal-color);            
+}
+
+.modal-blue .modal-header,
+.modal-blue .modal-footer {
+  background-color: #2b63c4;             
+  color: #ffffff;                          
+}
+
+.modal-blue .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%); 
+}
+
+.modal-blue .modal-backdrop,
+.modal-blue ~ .modal-backdrop {
+  --bs-backdrop-bg: #0b1b35; 
+  --bs-backdrop-opacity: 0.6; 
+}

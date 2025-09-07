@@ -4,18 +4,24 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import Swal from 'sweetalert2';
 import { TransactionService } from '../../../services/TransactionService/transaction.service';
+import { AccountDTO, AccountService } from '../../../services/AccountService/account-service.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-make-transaction',
   standalone: true,
   templateUrl: './make-transaction.component.html',
   styleUrls: ['./make-transaction.component.css'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule,MatFormFieldModule,MatSelectModule,MatInputModule]
 })
 export class MakeTransactionComponent implements OnInit {
   private fb = inject(FormBuilder);
   private api = inject(TransactionService);
+  private AccountApi = inject(AccountService)
   private platformId = inject(PLATFORM_ID);
+  fromAccounts: AccountDTO[] = [];
 
   submitting = false;
 
@@ -34,14 +40,17 @@ export class MakeTransactionComponent implements OnInit {
     transactionTypeId: [null as number | null, [Validators.required]]
   });
 
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const raw = localStorage.getItem('DefaultFromAccount');
-      const parsed = raw ? Number(raw) : NaN;
-      if (!isNaN(parsed)) {
-        this.defaultFromAccount = parsed;
-        this.form.patchValue({ fromAccount: parsed });
-      }
+ngOnInit(): void {
+    const rawUser = isPlatformBrowser(this.platformId) ? localStorage.getItem('UserDetails') : null;
+    const userId = rawUser ? Number(JSON.parse(rawUser)?.userId) : null;
+
+    if (userId != null && !Number.isNaN(userId)) {
+      this.AccountApi.getAccountsByUserId(userId).subscribe({
+        next: (list) => {
+          this.fromAccounts = Array.isArray(list) ? list.filter(m=>m.isActive == true) : [];
+        },
+        error: () => { this.fromAccounts = []; }
+      });
     }
   }
 

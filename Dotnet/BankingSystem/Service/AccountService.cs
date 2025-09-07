@@ -99,7 +99,7 @@ public class AccountService : IAccountService
     }
     public async Task<string> RequestAccountTypeChangeAsync(long accountNumber, string newAccountType, int userId)
     {
-        var account = await context.DbAccount.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+        var account = await context.DbAccount.Include(l=>l.AccountType).FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
         if (account == null)
             return "Account not found.";
 
@@ -108,6 +108,8 @@ public class AccountService : IAccountService
 
         var accountType = await context.DbAccountType
             .FirstOrDefaultAsync(a => a.AccountType.ToLower() == newAccountType.ToLower());
+        
+        
 
         if (accountType == null)
             return "Invalid account type.";
@@ -116,7 +118,7 @@ public class AccountService : IAccountService
         {
             AccountNumber = accountNumber,
 
-            RequestedChange = $"Change AccountType to {newAccountType}",
+            RequestedChange = $"Change {account.AccountType!.AccountType} AccountType to {newAccountType}",
             RequestedBy = userId.ToString()
         };
 

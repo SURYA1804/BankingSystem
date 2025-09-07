@@ -92,6 +92,9 @@ namespace BankingSystem.Migrations.SqlServer
                     b.Property<bool>("IsProcessed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("RequestedAt")
                         .HasColumnType("datetime2");
 
@@ -251,11 +254,20 @@ namespace BankingSystem.Migrations.SqlServer
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
+                    b.Property<int>("LoanAmount")
+                        .HasColumnType("int");
+
                     b.Property<int>("LoanTypeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("isProcessed")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
