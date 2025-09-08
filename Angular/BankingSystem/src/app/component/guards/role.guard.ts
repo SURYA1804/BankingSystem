@@ -33,16 +33,17 @@ export class RoleGuard implements CanActivate {
 
     const required = (route.data['roles'] as AppRole[] | undefined) ?? [];
     const roles = this.getUserRoles();
+    if(IsOTPVerified == "false" || IsOTPVerified == null)
+    {
+          this.router.navigate(['/OtpRequired']);
+          return false;
+    }
     const allowed = required.length === 0 || required.some(r => roles.includes(r));
     if (allowed) 
       {
         return true
       };
-    if(IsOTPVerified == "false" || IsOTPVerified == null)
-    {
-          this.router.navigate(['/unauthorized']);
-          return false;
-    }
+
     this.router.navigate(['/unauthorized']);
     return false;
 

@@ -21,8 +21,8 @@
         <div class="fw-semibold fs-5 text-white">
           Loan #{{ loan.id }} — {{ loan.userName || 'N/A' }}
         </div>
-        <div class="text-muted fst-italic small">
-          {{ loan.loanTypeName || 'N/A' }} • Amount: {{ loan.loanAmount | currency }}
+        <div class="text-white fst-italic small">
+          {{ loan.loanTypeName || 'N/A' }} • Amount: {{ loan.loanAmount | currency :('INR') }}
         </div>
       </div>
 

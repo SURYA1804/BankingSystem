@@ -100,13 +100,13 @@ export class OtpVerificationComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'Verified',
-          text: res.message,
+          text: `OTP Verified Successfully!`,
           confirmButtonColor: '#0d6efd'
         }).then(() => {
           localStorage.setItem("IsOTPVerified","true");
           switch (this.user.roleName) {
-            case 'admin':
-              this.router.navigate(['/admin/dashboard']);
+            case 'Manager':
+              this.router.navigate(['/manager/dashboard']);
               break;
             case 'customer':
               this.router.navigate(['/customer/dashboard']);
@@ -114,16 +114,24 @@ export class OtpVerificationComponent implements OnInit {
             case 'staff':
               this.router.navigate(['/staff/dashboard']);
               break;
-            default:
-              this.router.navigate(['/dashboard']);
-          }
+            default:{
+                Swal.fire({
+                icon: 'error',
+                title: 'Verification Failed',
+                text: 'Something went wrong',
+                confirmButtonColor: '#dc3545'
+                });        
+                this.router.navigate(['/login']);
+              }
+
+      }
         });
       },
       error: err => {
         Swal.fire({
           icon: 'error',
           title: 'Verification Failed',
-          text: err.error?.message || 'Something went wrong',
+          text: err.error || 'Something went wrong',
           confirmButtonColor: '#dc3545'
         });
       }

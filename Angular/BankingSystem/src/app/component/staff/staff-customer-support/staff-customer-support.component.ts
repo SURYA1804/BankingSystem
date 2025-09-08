@@ -130,7 +130,7 @@ export class StaffCustomerSupportComponent implements OnInit {
             this.fetch();
           }
 
-          this.cdr.detectChanges(); 
+          // this.cdr.detectChanges(); 
           Swal.fire({
             icon: 'success',
             title: 'Message Sent',

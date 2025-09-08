@@ -25,9 +25,13 @@ import { LoanSupportComponent } from './component/Manager/loan-support/loan-supp
 import { UserActivityComponent } from './component/Manager/user-activity/user-activity.component';
 import { CreateStaffComponent } from './component/Manager/create-staff/create-staff.component';
 import { UpdateProfileComponent } from './component/customer/update-profile/update-profile.component';
+import { Optional } from '@angular/core';
+import { OTPVerficationRequiredComponent } from './component/otpverfication-required/otpverfication-required.component';
 
 export const routes: Routes = [
     { path: 'unauthorized', component: UnauthorizedComponent },
+    { path: 'OtpRequired', component: OTPVerficationRequiredComponent },
+    
   {
     path: '',
     component: PublicLayoutComponent,
