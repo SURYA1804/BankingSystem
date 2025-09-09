@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, finalize } from 'rxjs';
 import Swal from 'sweetalert2';
@@ -24,11 +24,13 @@ export class AccountManagementComponent implements OnInit {
   private api = inject(AccountService);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private AccountApi = inject(AccountService)
 
   user: IUser | null = null;
   types$!: Observable<IAccountType[]>;
   AccountTypes: IAccountType[] = [];
   accounts: AccountDTO[] = [];
+  fromAccounts: AccountDTO[] = [];
   accountsLoading = false;
   accountsError: string | null = null;
   creating = false;
@@ -60,6 +62,18 @@ export class AccountManagementComponent implements OnInit {
       this.cdr.detectChanges();
       console.log(this.AccountTypes)
     });
+    const rawUser = isPlatformBrowser(this.platformId) ? localStorage.getItem('UserDetails') : null;
+    const userId = rawUser ? Number(JSON.parse(rawUser)?.userId) : null;
+
+    if (userId != null && !Number.isNaN(userId)) {
+      this.AccountApi.getAccountsByUserId(userId).subscribe({
+        next: (list) => {
+          this.fromAccounts = Array.isArray(list) ? list.filter(m=>m.isActive == true) : [];
+        },
+        error: () => { this.fromAccounts = []; }
+      });
+    }
+
   }
 
 iconFor(type?: string): string {

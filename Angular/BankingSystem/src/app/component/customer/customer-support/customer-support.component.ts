@@ -20,8 +20,8 @@ export class CustomerSupportComponent implements OnInit {
   private fb = inject(FormBuilder);
   private api = inject(CustomerSupportService);
   private platformId = inject(PLATFORM_ID);
-  private cdr = inject(ChangeDetectorRef);
-  private zone = inject(NgZone);
+  // private cdr = inject(ChangeDetectorRef);
+  // private zone = inject(NgZone);
 
   userId: number | null = null;
 
@@ -181,7 +181,7 @@ sendDraft() {
         showConfirmButton: false
       }).then(() => {
         this.loadTickets();
-        this.reloadRoute();
+        // this.reloadRoute();
       });
 
     },

@@ -14,6 +14,7 @@ public class CustomerQueryProfile : Profile
             .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.QueryComments));
 
         CreateMap<QueryComments, QueryCommentsDTO>()
+            .ForMember(dest => dest.CommentId, opt => opt.MapFrom(src => src.QueryCommentsId))
             .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.comments));
     }
 }

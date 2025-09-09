@@ -67,8 +67,8 @@ public class UserService : IUserService
         using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            if (await context.DbUsers.AnyAsync(u => u.Email == registerDTO.Email))
-                throw new Exception("User with this email already exists");
+            // if (await context.DbUsers.AnyAsync(u => u.Email == registerDTO.Email))
+            //     throw new Exception("User with this email already exists");
 
             var hashedPassword = HassPassword.GetHashPassword(registerDTO.Password);
             // var customerType = await context.DbCustomerTypes

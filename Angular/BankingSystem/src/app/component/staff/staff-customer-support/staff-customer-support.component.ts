@@ -63,7 +63,7 @@ export class StaffCustomerSupportComponent implements OnInit {
         this.tickets = res ?? [];
         this.loading = false;
         if (this.tickets.length > 0 && !this.selected) {
-          this.openTicket(this.tickets[0]); // ✅ FIXED
+          this.openTicket(this.tickets[0]); 
         }
       },
       error: (err) => {
@@ -100,8 +100,10 @@ export class StaffCustomerSupportComponent implements OnInit {
     if (!this.newMessage?.trim() || !this.selected) return;
 
     const text = this.newMessage.trim();
+    const maxId = Math.max(...this.selected.comments.map(m => m.CommentId || Number.MAX_SAFE_INTEGER));
 
     const optimistic: QueryCommentsDTO & { _temp?: boolean } = {
+      CommentId:maxId,
       comment: text,
       createdAt: new Date().toISOString(),
       isStaffComment: true,
@@ -110,6 +112,7 @@ export class StaffCustomerSupportComponent implements OnInit {
     };
 
     this.selected.comments.push(optimistic);
+    //this.selected.comments = this.selected.comments.sort(m=>m.CommentId);
     this.scrollToBottom();
     this.newMessage = '';
 
@@ -136,10 +139,11 @@ export class StaffCustomerSupportComponent implements OnInit {
             title: 'Message Sent',
             showConfirmButton: false,
             timer: 1200,
-          }).then(() => {
+          })
+          .then(() => {
             setTimeout(() => {
               window.location.reload();
-            }, 10); 
+            }, 1); 
           });
           this.scrollToBottom();
 

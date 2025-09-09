@@ -54,7 +54,7 @@ public class CustomerTypeService : ICustomerTypeService
     {
         try
         {
-            return await context.DbCustomerTypes.ToListAsync();
+            return await context.DbCustomerTypes.Where(m=>m.CustomerType != "nil").ToListAsync();
         }
         catch (Exception)
         {

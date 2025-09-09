@@ -15,20 +15,35 @@ import { CommonModule } from '@angular/common';
 })
 export class CreateStaffComponent implements OnInit {
   staffForm: FormGroup;
+  maxDate: string ='';
   staffs: IUser[] = [];
   loadingStaffs = false;
   creating = false;
 
   constructor(private managerService: ManagerService, private fb: FormBuilder) {
     this.staffForm = this.fb.group({
-      name: ['', Validators.required],
-      userName: ['', Validators.required],
+      name: ['',[
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern('^[a-zA-Z0-9 ]+$') 
+      ]],
+      userName: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern('^[a-zA-Z0-9]+$') 
+      ]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8)
+      ]],
       age: ['', [Validators.required, Validators.min(18)]],
       dob: ['', Validators.required],
       address: [''],
-      phoneNumber: ['', Validators.required]
+      phoneNumber: ['', [
+        Validators.required,
+        Validators.pattern('^[0-9]{10}$') 
+      ]]
     });
   }
 showCreateForm = false;
@@ -38,6 +53,8 @@ toggleCreateForm() {
 }
 
   ngOnInit(): void {
+    const today = new Date();
+  this.maxDate = today.toISOString().split('T')[0];
     this.fetchStaffs();
   }
 
@@ -68,4 +85,7 @@ toggleCreateForm() {
       }
     });
   }
+
+  
+
 }

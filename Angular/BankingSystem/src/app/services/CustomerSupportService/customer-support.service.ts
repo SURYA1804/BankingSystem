@@ -9,6 +9,7 @@ export interface RaiseTicketDTO {
 }
 
 export interface QueryCommentsDTO {
+  CommentId:number;
   comment: string;
   createdAt: string;
   isStaffComment: boolean;

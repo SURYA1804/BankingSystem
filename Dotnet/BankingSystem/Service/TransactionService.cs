@@ -109,7 +109,7 @@ namespace Service
                     .Where(t => t.FromAccountNumber == AccountNumber || t.ToAccountNumber == AccountNumber)
                     .Include(t => t.FromAccount).ThenInclude(a => a.User)
                     .Include(t => t.ToAccount).ThenInclude(a => a.User)
-                    .Include(t => t.TransactionType)
+                    .Include(t => t.TransactionType).OrderByDescending(m=>m.TransactionId)
                     .ToListAsync();
 
                 return mapper.Map<List<TransactionDTO>>(transactions);

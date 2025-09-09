@@ -62,7 +62,7 @@ public class CustomerSupportService : ICustomerSupportService
         }
     }
 
-    public async Task<QueryComments> AddCommentAsync(AddCommentsDTO addCommentsDTO)
+    public async Task<CustomerQueryDTO> AddCommentAsync(AddCommentsDTO addCommentsDTO)
     {
         var query = await context.DbCustomerQuery.FirstOrDefaultAsync(q => q.CustomerQueryId == addCommentsDTO.QueryId);
         if (query == null)
@@ -79,8 +79,11 @@ public class CustomerSupportService : ICustomerSupportService
 
         await context.DbQueryComments.AddAsync(comment);
         await context.SaveChangesAsync();
+        query = await context.DbCustomerQuery.Include(u => u.User).Include(q => q.queryType)
+        .Include(q => q.QueryComments.OrderBy(m=>m.QueryCommentsId)).Include(q => q.QueryStatus).Include(q => q.QueryPriority)
+        .FirstOrDefaultAsync(q => q.CustomerQueryId == addCommentsDTO.QueryId);
 
-        return comment;
+        return _mapper.Map<CustomerQueryDTO>(query);
     }
 
    public async Task<List<CustomerQueryDTO>> GetAllPendingQueriesAsync()

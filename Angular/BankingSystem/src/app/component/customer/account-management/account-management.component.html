@@ -125,7 +125,18 @@
           <form [formGroup]="closeForm" (ngSubmit)="submitClose()" novalidate>
             <div class="mb-3">
               <label class="form-label">Account Number</label>
-              <input type="text" class="form-control" formControlName="accountNumber">
+            <mat-form-field appearance="fill" class="w-100 text-white">
+              <mat-label >Account</mat-label>
+              <mat-select  formControlName="accountNumber" required>
+                <mat-option value="" disabled>Select</mat-option>
+                <mat-option *ngFor="let a of fromAccounts" [value]="a.accountNumber">
+                  {{ a.accountNumber }} — {{ a.accountTypeName }} (₹{{ a.balance | number:'1.2-2' }})
+                </mat-option>
+              </mat-select>
+              <mat-error class="text-white" *ngIf="closeForm.controls.accountNumber.invalid && closeForm.controls.accountNumber.touched">
+                Select a valid account
+              </mat-error>
+            </mat-form-field>
             </div>
 
             <div class="mb-3">
@@ -148,8 +159,19 @@
           <h5 class="card-title mb-3">Change Account Type</h5>
           <form [formGroup]="changeTypeForm" (ngSubmit)="submitChangeType()" novalidate>
             <div class="mb-3">
-              <label class="form-label">Account Number</label>
-              <input type="text" class="form-control" formControlName="accountNumber">
+            <label class="form-label">Account Number</label>
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label > Account</mat-label>
+              <mat-select  formControlName="accountNumber" required>
+                <mat-option value="" disabled>Select</mat-option>
+                <mat-option *ngFor="let a of fromAccounts" [value]="a.accountNumber">
+                  {{ a.accountNumber }} — {{ a.accountTypeName }} (₹{{ a.balance | number:'1.2-2' }})
+                </mat-option>
+              </mat-select>
+              <mat-error class="text-white" *ngIf="changeTypeForm.controls.accountNumber.invalid && changeTypeForm.controls.accountNumber.touched">
+                Select a valid account
+              </mat-error>
+            </mat-form-field>
             </div>
 
             <div class="mb-3">

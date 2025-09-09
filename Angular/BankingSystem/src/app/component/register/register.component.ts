@@ -27,6 +27,7 @@ import { MatInputModule } from '@angular/material/input';
 export class RegisterComponent implements OnInit {
   Register: IRegister;
   customerTypes: ICustomerType[] = [];
+  maxDate: string ='';
 
   constructor(
     private authService: AuthService,
@@ -48,6 +49,8 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
+  const today = new Date();
+  this.maxDate = today.toISOString().split('T')[0];
     this.customerService.getCustomerTypes().subscribe({
       next: (res) => this.customerTypes = res,
       error: (err) => console.error('Failed to fetch customer types', err)
@@ -55,6 +58,79 @@ export class RegisterComponent implements OnInit {
   }
 
   onRegister() {
+    if (!this.Register.name || this.Register.name.trim().length < 3) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Name',
+      text: 'Full Name must be at least 3 characters long',
+    });
+    return;
+  }
+
+  if (!this.Register.userName || this.Register.userName.trim().length < 3) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Username',
+      text: 'Username must be at least 3 characters long',
+    });
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!this.Register.email || !emailRegex.test(this.Register.email)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Email',
+      text: 'Please enter a valid email address',
+    });
+    return;
+  }
+
+  if (!this.Register.password || this.Register.password.length < 8) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Weak Password',
+      text: 'Password must be at least 6 characters long',
+    });
+    return;
+  }
+
+  const phoneRegex = /^[0-9]{10}$/;
+  if (!this.Register.phoneNumber || !phoneRegex.test(this.Register.phoneNumber)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Phone Number',
+      text: 'Phone number must be exactly 10 digits',
+    });
+    return;
+  }
+
+  if (!this.Register.customerType) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Select Customer Type',
+      text: 'Please choose a customer type',
+    });
+    return;
+  }
+
+  if (!this.Register.age || this.Register.age < 5) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Age',
+      text: 'You must be at least 5 years old to register',
+    });
+    return;
+  }
+
+  if (!this.Register.dob) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Date of Birth Required',
+      text: 'Please select your date of birth',
+    });
+    return;
+  }
     this.authService.register(this.Register).subscribe({
       next: () => {
         Swal.fire({
@@ -72,7 +148,7 @@ export class RegisterComponent implements OnInit {
         Swal.fire({
           icon: 'error',
           title: 'Registration Failed',
-          text: err.error.message || 'Something went wrong!',
+          text: err.error.message || 'Username Already Taken!',
         });
       }
     });

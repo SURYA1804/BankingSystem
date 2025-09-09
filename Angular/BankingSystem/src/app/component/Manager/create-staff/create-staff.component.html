@@ -5,47 +5,88 @@
         {{ showCreateForm ? 'Hide' : 'Show' }} Create Staff Form
       </button>
 
-      <div *ngIf="showCreateForm">
-        <h3>Create Staff</h3>
-        <form [formGroup]="staffForm" (ngSubmit)="submitCreate()">
-          <div class="mb-3">
-            <label>Name</label>
-            <input formControlName="name" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label>Username</label>
-            <input formControlName="userName" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label>Email</label>
-            <input type="email" formControlName="email" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label>Password</label>
-            <input type="password" formControlName="password" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label>Age</label>
-            <input type="number" formControlName="age" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label>Date of Birth</label>
-            <input type="date" formControlName="dob" class="form-control" /> 
-          </div>
-          <div class="mb-3">
-            <label>Address</label>
-            <textarea formControlName="address" class="form-control"></textarea>
-          </div>
-          <div class="mb-3">
-            <label>Phone Number</label>
-            <input formControlName="phoneNumber" class="form-control" />
-          </div>
-          <button type="submit" class="btn btn-primary" [disabled]="creating || staffForm.invalid">
-            <span *ngIf="creating" class="spinner-border spinner-border-sm me-2"></span>
-            Create Staff
-          </button>
-        </form>
-      </div>
+<div *ngIf="showCreateForm">
+  <h3>Create Staff</h3>
+  <form [formGroup]="staffForm" (ngSubmit)="submitCreate()">
+    <div class="mb-3">
+      <label>Name</label>
+      <input formControlName="name" class="form-control" />
+      <span class="text-danger" *ngIf="staffForm.get('name')?.touched && staffForm.get('name')?.invalid">
+        <small *ngIf="staffForm.get('name')?.errors?.['required']">Name is required.</small>
+        <small *ngIf="staffForm.get('name')?.errors?.['minlength']">Name must be at least 3 characters.</small>
+        <small *ngIf="staffForm.get('name')?.errors?.['pattern']">Name must not contain special characters.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Username</label>
+      <input formControlName="userName" class="form-control" />
+      <span class="text-danger" *ngIf="staffForm.get('userName')?.touched && staffForm.get('userName')?.invalid">
+        <small *ngIf="staffForm.get('userName')?.errors?.['required']">Username is required.</small>
+        <small *ngIf="staffForm.get('userName')?.errors?.['minlength']">Username must be at least 3 characters.</small>
+        <small *ngIf="staffForm.get('userName')?.errors?.['pattern']">Username must not contain special characters or spaces.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Email</label>
+      <input type="email" formControlName="email" class="form-control" />
+      <span class="text-danger" *ngIf="staffForm.get('email')?.touched && staffForm.get('email')?.invalid">
+        <small *ngIf="staffForm.get('email')?.errors?.['required']">Email is required.</small>
+        <small *ngIf="staffForm.get('email')?.errors?.['email']">Email must be valid.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Password</label>
+      <input type="password" formControlName="password" class="form-control" />
+      <span class="text-danger" *ngIf="staffForm.get('password')?.touched && staffForm.get('password')?.invalid">
+        <small *ngIf="staffForm.get('password')?.errors?.['required']">Password is required.</small>
+        <small *ngIf="staffForm.get('password')?.errors?.['minlength']">Password must be at least 8 characters.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Age</label>
+      <input type="number" formControlName="age" class="form-control" />
+      <span class="text-danger" *ngIf="staffForm.get('age')?.touched && staffForm.get('age')?.invalid">
+        <small *ngIf="staffForm.get('age')?.errors?.['required']">Age is required.</small>
+        <small *ngIf="staffForm.get('age')?.errors?.['ageTooYoung']">Age must be greater than 18.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Date of Birth</label>
+      <input type="date" formControlName="dob" class="form-control" [attr.max]="maxDate" />
+      <span class="text-danger" *ngIf="staffForm.get('dob')?.touched && staffForm.get('dob')?.invalid">
+        <small>Date of Birth is required.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Address</label>
+      <textarea formControlName="address" class="form-control"></textarea>
+      <span class="text-danger" *ngIf="staffForm.get('address')?.touched && staffForm.get('address')?.invalid">
+        <small>Address is required.</small>
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label>Phone Number</label>
+      <input formControlName="phoneNumber" class="form-control" />
+      <span class="text-danger" *ngIf="staffForm.get('phoneNumber')?.touched && staffForm.get('phoneNumber')?.invalid">
+        <small *ngIf="staffForm.get('phoneNumber')?.errors?.['required']">Phone Number is required.</small>
+        <small *ngIf="staffForm.get('phoneNumber')?.errors?.['pattern']">Phone Number must be exactly 10 digits.</small>
+      </span>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="creating || staffForm.invalid">
+      <span *ngIf="creating" class="spinner-border spinner-border-sm me-2"></span>
+      Create Staff
+    </button>
+  </form>
+</div>
+
     </div>
 
     <div class="col-md-6">

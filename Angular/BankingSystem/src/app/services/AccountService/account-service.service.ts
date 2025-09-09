@@ -66,7 +66,7 @@ export class AccountService {
       .set('ticketId', ticketId.toString())
       .set('staffId', staffId.toString())
       .set('action', action.toString())
-      .set('RejectionReaosn', rejectionReason ?? '');
+      .set('RejectionReaosn', rejectionReason ?? 'Approved');
 
     return this.http.post(`${this.basestaffurl}/ReviewAccountTypeChange`, null, { responseType: 'text', params });
   }

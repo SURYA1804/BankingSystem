@@ -29,7 +29,7 @@
 
   <div *ngIf="selectedField === 'dob'" class="mb-3">
     <label for="dob" class="form-label">Date of Birth</label>
-    <input id="dob" type="date" formControlName="dob" class="form-control" />
+    <input id="dob" type="date" formControlName="dob" [attr.max]="maxDate" class="form-control" />
   </div>
 
   <div *ngIf="selectedField === 'age'" class="mb-3">
@@ -50,6 +50,7 @@
   <div *ngIf="selectedField === 'email'" class="mb-3">
     <label for="email" class="form-label">Email</label>
     <input id="email" type="email" formControlName="email" class="form-control" placeholder="Enter Email" />
+
   </div>
 
   <div *ngIf="selectedField === 'phoneNumber'" class="mb-3">

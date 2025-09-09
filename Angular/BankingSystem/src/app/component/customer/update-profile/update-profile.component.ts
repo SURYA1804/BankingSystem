@@ -16,14 +16,20 @@ export class UpdateProfileComponent implements OnInit {
   updateForm!: FormGroup;
   userId!: number;
   selectedField: string | null = null;
+  maxDate: string = '';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private fb: FormBuilder,
     private userService: UserService
-  ) {}
+  ) 
+  {
+
+  }
 
   ngOnInit(): void {
+  const today = new Date();
+  this.maxDate = today.toISOString().split('T')[0];
     if (isPlatformBrowser(this.platformId)) {
       const raw = localStorage.getItem('UserDetails');
       if (raw) {
@@ -44,13 +50,27 @@ export class UpdateProfileComponent implements OnInit {
     name: [''],
     userName: [''],
     dob: [''],
-    age: [''],
+    age: ['', [Validators.min(5)]],
     oldPassword: [''], 
-    password: [''],
+     password: ['', [Validators.minLength(8)]],
     email: [''],
-    phoneNumber: ['']
+  phoneNumber: ['', [Validators.pattern('^[0-9]{10}$')]]
   });
   }
+formatFieldName(field: string): string {
+  switch (field) {
+    case 'userName':
+      return 'Username';
+    case 'dob':
+      return 'Date of Birth';
+    case 'phoneNumber':
+      return 'Phone Number';
+    case 'oldPassword':
+      return 'old Password';
+    default:
+      return field.charAt(0).toUpperCase() + field.slice(1);
+  }
+}
 
 onFieldChange(event: MatSelectChange) {
   this.selectedField = event.value;
@@ -75,8 +95,20 @@ onFieldChange(event: MatSelectChange) {
   if (this.selectedField === 'email') {
     validators.push(Validators.email);
   }
-  if (this.selectedField === 'age') {
-    validators.push(Validators.min(1), Validators.max(120));
+  if(this.selectedField === 'phoneNumber')
+  {
+    validators.push(Validators.pattern('^[0-9]{10}$'));
+
+  }
+  if(this.selectedField === 'age')
+  {
+    validators.push(Validators.min(5));
+
+  }
+  if(this.selectedField === 'password')
+  {
+    validators.push(Validators.minLength(8));
+
   }
 
   control.setValidators(validators);
@@ -91,9 +123,31 @@ onSubmit() {
     return;
   }
 
-  const control = this.updateForm.get(this.selectedField);
+const control = this.updateForm.get(this.selectedField);
   if (!control || control.invalid) {
-    Swal.fire('Invalid input', 'Please enter a valid value for the selected field.', 'error');
+    let errorMessage = 'Invalid input. Please correct the error.';
+
+    if (control?.errors) {
+      if (control.errors['required']) {
+        errorMessage = `${this.formatFieldName(this.selectedField)} is required.`;
+      } else if (control.errors['email']) {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (control.errors['minlength']) {
+        const requiredLength = control.errors['minlength'].requiredLength;
+        errorMessage = `Password must be at least ${requiredLength} characters long.`;
+      } else if (control.errors['pattern']) {
+        if (this.selectedField === 'phoneNumber') {
+          errorMessage = 'Phone number must be exactly 10 digits.';
+        } else {
+          errorMessage = 'Invalid format.';
+        }
+      } else if (control.errors['min']) {
+        const min = control.errors['min'].min;
+        errorMessage = `Age must be at least ${min} years old.`;
+      }
+    }
+
+    Swal.fire('Validation Error', errorMessage, 'error');
     return;
   }
 

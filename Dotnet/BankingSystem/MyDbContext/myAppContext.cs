@@ -40,13 +40,13 @@ public class MyAppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<UsersModel>()
-            .HasIndex(u => u.Email)
-            .IsUnique();
+        // modelBuilder.Entity<UsersModel>()
+        //     .HasIndex(u => u.Email)
+        //     .IsUnique();
 
-        modelBuilder.Entity<UsersModel>()
-            .HasIndex(u => u.PhoneNumber)
-            .IsUnique();
+        // modelBuilder.Entity<UsersModel>()
+        //     .HasIndex(u => u.PhoneNumber)
+        //     .IsUnique();
 
         modelBuilder.Entity<UsersModel>()
             .HasIndex(u => u.UserName)

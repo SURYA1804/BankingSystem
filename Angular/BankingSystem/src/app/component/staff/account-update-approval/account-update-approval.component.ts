@@ -129,7 +129,13 @@ pagedPendingTickets() {
           input: 'text',
           inputPlaceholder: 'Enter reason',
           showCancelButton: true,
-          confirmButtonText: 'Reject'
+          confirmButtonText: 'Reject',
+          inputValidator: (value) => {
+        const v = (value ?? '').trim();
+        if (!v) return 'Reason is required';
+        if (v.length < 3) return 'Reason must be at least 3 characters';
+        return null; 
+      },
         }).then(reject => {
           if (reject.isConfirmed) {
             this.sendReview(ticket, 2, reject.value ?? '');
@@ -149,7 +155,7 @@ pagedPendingTickets() {
 
     Swal.fire({ title: 'Processing...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
 
-    this.staff.reviewAccountTypeChange(ticket.ticketId, staffId, action, reason).subscribe({
+    this.staff.reviewAccountTypeChange(ticket.ticketId, staffId, action, reason||'Approved').subscribe({
       next: res => {
         Swal.close();
         if (action === 1) {

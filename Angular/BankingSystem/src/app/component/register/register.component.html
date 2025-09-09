@@ -64,7 +64,7 @@
 
       <div class="mb-3">
         <span class="form-label fw-semibold">Date of Birth</span>
-        <input type="date" class="form-control" 
+        <input type="date" class="form-control"  [attr.max]="maxDate"
                [(ngModel)]="Register.dob" name="dob" />
       </div>
 

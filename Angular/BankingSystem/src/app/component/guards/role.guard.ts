@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 
-type AppRole = 'CUSTOMER' | 'STAFF' | 'ADMIN' | 'LOAN_OFFICER' | 'SUPPORT';
+type AppRole = 'customer' | 'staff' | 'manager' ;
 
 @Injectable({ providedIn: 'root' })
 export class RoleGuard implements CanActivate {

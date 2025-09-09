@@ -77,7 +77,6 @@ export class LoanApprovalComponent implements OnInit {
   }
 
   if (isApproved) {
-    // APPROVE path (no reason required)
     const result = await Swal.fire({
       title: 'Approve loan?',
       text: 'This will approve the selected loan request.',
@@ -113,7 +112,6 @@ export class LoanApprovalComponent implements OnInit {
     return;
   }
 
-  // REJECT path (collect reason first)
   const reasonAsk = await Swal.fire({
     title: 'Reject loan',
     input: 'textarea',
