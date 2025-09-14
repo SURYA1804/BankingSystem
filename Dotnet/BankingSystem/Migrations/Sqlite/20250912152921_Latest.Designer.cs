@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyDbContext;
 
@@ -10,9 +11,11 @@ using MyDbContext;
 namespace BankingSystem.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    partial class SqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912152921_Latest")]
+    partial class Latest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
@@ -309,23 +312,6 @@ namespace BankingSystem.Migrations.Sqlite
                     b.HasKey("AccountTypeID");
 
                     b.ToTable("DbAccountType");
-
-                    b.HasData(
-                        new
-                        {
-                            AccountTypeID = 1,
-                            AccountType = "Savings"
-                        },
-                        new
-                        {
-                            AccountTypeID = 2,
-                            AccountType = "Current"
-                        },
-                        new
-                        {
-                            AccountTypeID = 3,
-                            AccountType = "Salary"
-                        });
                 });
 
             modelBuilder.Entity("Model.MasterCustomerType", b =>
@@ -341,33 +327,6 @@ namespace BankingSystem.Migrations.Sqlite
                     b.HasKey("CustomerTypeId");
 
                     b.ToTable("DbCustomerTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            CustomerTypeId = 1,
-                            CustomerType = "Individual"
-                        },
-                        new
-                        {
-                            CustomerTypeId = 2,
-                            CustomerType = "Company"
-                        },
-                        new
-                        {
-                            CustomerTypeId = 3,
-                            CustomerType = "Minnor"
-                        },
-                        new
-                        {
-                            CustomerTypeId = 4,
-                            CustomerType = "Joint"
-                        },
-                        new
-                        {
-                            CustomerTypeId = 5,
-                            CustomerType = "Nil"
-                        });
                 });
 
             modelBuilder.Entity("Model.MasterRoles", b =>
@@ -383,23 +342,6 @@ namespace BankingSystem.Migrations.Sqlite
                     b.HasKey("RoleId");
 
                     b.ToTable("DbRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            RoleName = "Customer"
-                        },
-                        new
-                        {
-                            RoleId = 2,
-                            RoleName = "Staff"
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            RoleName = "Manager"
-                        });
                 });
 
             modelBuilder.Entity("Model.MasterTransactionType", b =>

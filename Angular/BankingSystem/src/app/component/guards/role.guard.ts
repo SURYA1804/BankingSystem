@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 
-type AppRole = 'customer' | 'staff' | 'manager' ;
-
+type AppRole = 'Customer' | 'Staff' | 'Manager' ;
 @Injectable({ providedIn: 'root' })
 export class RoleGuard implements CanActivate {
   constructor(private router: Router) {}

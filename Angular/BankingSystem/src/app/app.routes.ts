@@ -46,7 +46,7 @@ export const routes: Routes = [
   path: 'customer',
   component: CustomerLayoutComponent,
   canActivate: [RoleGuard],
-  data: { roles: ['customer'] },
+  data: { roles: ['Customer'] },
   children: [
     { path: 'dashboard', component: CustomerDashboardComponent },
     { path: 'account', component: AccountManagementComponent },
@@ -62,7 +62,7 @@ export const routes: Routes = [
   path: 'staff',
   component: StafflayoutComponent,
   canActivate: [RoleGuard],
-  data: { roles: ['staff'] },
+  data: { roles: ['Staff'] },
   children: [
     { path: 'dashboard', component: StaffDashboardComponent },
     { path: 'CustomerSupport', component: StaffCustomerSupportComponent },

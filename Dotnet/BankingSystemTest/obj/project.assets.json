@@ -5250,39 +5250,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\surya.p\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\surya\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\surya.p\\Desktop\\BankingSystem\\BankingSystem\\Dotnet\\BankingSystemTest\\BankingSystemTest.csproj",
+      "projectUniqueName": "C:\\Users\\surya\\LearningCode\\BankingSystem\\Dotnet\\BankingSystemTest\\BankingSystemTest.csproj",
       "projectName": "BankingSystemTest",
-      "projectPath": "C:\\Users\\surya.p\\Desktop\\BankingSystem\\BankingSystem\\Dotnet\\BankingSystemTest\\BankingSystemTest.csproj",
-      "packagesPath": "C:\\Users\\surya.p\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\surya.p\\Desktop\\BankingSystem\\BankingSystem\\Dotnet\\BankingSystemTest\\obj\\",
+      "projectPath": "C:\\Users\\surya\\LearningCode\\BankingSystem\\Dotnet\\BankingSystemTest\\BankingSystemTest.csproj",
+      "packagesPath": "C:\\Users\\surya\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\surya\\LearningCode\\BankingSystem\\Dotnet\\BankingSystemTest\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\surya.p\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\surya\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\surya.p\\Desktop\\BankingSystem\\BankingSystem\\Dotnet\\BankingSystem\\BankingSystem.csproj": {
-              "projectPath": "C:\\Users\\surya.p\\Desktop\\BankingSystem\\BankingSystem\\Dotnet\\BankingSystem\\BankingSystem.csproj"
+            "C:\\Users\\surya\\LearningCode\\BankingSystem\\Dotnet\\BankingSystem\\BankingSystem.csproj": {
+              "projectPath": "C:\\Users\\surya\\LearningCode\\BankingSystem\\Dotnet\\BankingSystem\\BankingSystem.csproj"
             }
           }
         }

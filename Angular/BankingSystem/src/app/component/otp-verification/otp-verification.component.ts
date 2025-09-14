@@ -104,8 +104,8 @@ export class OtpVerificationComponent implements OnInit {
           confirmButtonColor: '#0d6efd'
         }).then(() => {
           localStorage.setItem("IsOTPVerified","true");
-          switch (this.user.roleName) {
-            case 'Manager':
+          switch (this.user.roleName.toLowerCase()) {
+            case 'manager':
               this.router.navigate(['/manager/dashboard']);
               break;
             case 'customer':

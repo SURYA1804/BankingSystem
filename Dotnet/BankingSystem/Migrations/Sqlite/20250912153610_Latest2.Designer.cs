@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyDbContext;
 
@@ -10,9 +11,11 @@ using MyDbContext;
 namespace BankingSystem.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    partial class SqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912153610_Latest2")]
+    partial class Latest2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
@@ -383,23 +386,6 @@ namespace BankingSystem.Migrations.Sqlite
                     b.HasKey("RoleId");
 
                     b.ToTable("DbRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            RoleName = "Customer"
-                        },
-                        new
-                        {
-                            RoleId = 2,
-                            RoleName = "Staff"
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            RoleName = "Manager"
-                        });
                 });
 
             modelBuilder.Entity("Model.MasterTransactionType", b =>

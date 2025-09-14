@@ -393,3 +393,6 @@ C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\obj\De
 C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\obj\Debug\net9.0\BankingSystem.pdb
 C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\obj\Debug\net9.0\BankingSystem.genruntimeconfig.cache
 C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\obj\Debug\net9.0\ref\BankingSystem.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\AutoMapper.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
