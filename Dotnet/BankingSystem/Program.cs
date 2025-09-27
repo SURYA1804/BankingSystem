@@ -135,13 +135,15 @@ app.UseSwaggerUI();
 // }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseCors("AllowPolicy");
 
 app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors("AllowPolicy");
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/swagger");
