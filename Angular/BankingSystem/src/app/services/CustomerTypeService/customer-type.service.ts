@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ICustomerType } from '../../../Interfaces/ICustomerType';
+import { environment } from '../../../environments/environment';
 
 
 
@@ -9,7 +10,11 @@ import { ICustomerType } from '../../../Interfaces/ICustomerType';
   providedIn: 'root'
 })
 export class CustomerService {
-  private apiUrl = 'http://localhost:5139/api/v1/CustomerType'; 
+  
+
+  private BaseUrl = environment.apiUrl;
+
+  private apiUrl = `${this.BaseUrl}/CustomerType`; 
 
   constructor(private http: HttpClient) {}
 

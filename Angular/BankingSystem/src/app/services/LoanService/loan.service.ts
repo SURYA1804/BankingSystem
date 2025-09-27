@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CreateLoanDTO {
   userId: number;
@@ -31,17 +32,19 @@ export interface LoanDTO {
 @Injectable({ providedIn: 'root' })
 export class LoanService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:5139/api/v1/Loan';
+  private BaseUrl = environment.apiUrl;
+  
+  private apiUrl = `${this.BaseUrl}/Loan`;
 
   create(dto: CreateLoanDTO): Observable<string> {
-    return this.http.post(`${this.base}/create`, dto, { responseType: 'text' });
+    return this.http.post(`${this.apiUrl}/create`, dto, { responseType: 'text' });
   }
   getMyLoans(userId: number) {
   const params = new HttpParams().set('UserId', String(userId));
-  return this.http.get<LoanDTO[]>(`${this.base}/GetMyLoans`, { params });
+  return this.http.get<LoanDTO[]>(`${this.apiUrl}/GetMyLoans`, { params });
 }
   getPendingApprovals(): Observable<LoanDTO[]> {
-    return this.http.get<LoanDTO[]>(`${this.base}/pending-approvals`);
+    return this.http.get<LoanDTO[]>(`${this.apiUrl}/pending-approvals`);
   }
     approveLoan(loanId: number, staffId: number, isApproved: boolean,reason:string): Observable<string> {
     const params = new HttpParams()
@@ -49,9 +52,9 @@ export class LoanService {
       .set('staffId', String(staffId))
       .set('reason', String(reason))
       .set('isApproved', String(isApproved));
-    return this.http.post(`${this.base}/approve`, null, { responseType: 'text', params });
+    return this.http.post(`${this.apiUrl}/approve`, null, { responseType: 'text', params });
   }
     getAllLoans(): Observable<LoanDTO[]> {
-    return this.http.get<LoanDTO[]>(`${this.base}/GetAllLoans`);
+    return this.http.get<LoanDTO[]>(`${this.apiUrl}/GetAllLoans`);
   }
 }

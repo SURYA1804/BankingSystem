@@ -396,3 +396,5 @@ C:\Users\surya.p\Desktop\BankingSystem\BankingSystem\Dotnet\BankingSystem\obj\De
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\AutoMapper.dll
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Npgsql.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll

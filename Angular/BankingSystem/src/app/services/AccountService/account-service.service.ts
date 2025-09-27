@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IAccountSummary } from '../../../Interfaces/IAccountSummary';
+import { environment } from '../../../environments/environment';
 
 export interface ApiMessage { message: string; }
 export interface AccountDTO {
@@ -34,8 +35,10 @@ export interface AccountUpdateTicketDTO {
 @Injectable({ providedIn: 'root' })
 export class AccountService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:5139/api/v1/Account';
-  private basestaffurl = 'http://localhost:5139/api/v1/staff';
+  private BaseUrl = environment.apiUrl;
+
+  private base = `${this.BaseUrl}/Account`;
+  private basestaffurl = `${this.BaseUrl}/staff`;
   createAccount(body: { userId: number; accountType: string; OpeningBalance: number;  }): Observable<ApiMessage> {
     return this.http.post<ApiMessage>(`${this.base}/CreateAccount`, body);
   }

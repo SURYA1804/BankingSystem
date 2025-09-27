@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface RaiseTicketDTO {
   userId: number;
@@ -32,27 +33,29 @@ export interface CustomerQueryDTO {
 @Injectable({ providedIn: 'root' })
 export class CustomerSupportService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:5139/api/v1/CustomerSupport';
+  private BaseUrl = environment.apiUrl;
+
+  private apiUrl = `${this.BaseUrl}/CustomerSupport`;
 
   createQuery(dto: RaiseTicketDTO): Observable<string> {
-    return this.http.post(`${this.base}/CreateQuery`, dto, { responseType: 'text' });
+    return this.http.post(`${this.apiUrl}/CreateQuery`, dto, { responseType: 'text' });
   }
 
   getAllQueriesByUser(userId: number): Observable<CustomerQueryDTO[]> {
     const params = new HttpParams().set('UserId', String(userId));
-    return this.http.get<CustomerQueryDTO[]>(`${this.base}/GetAllQueriesByUser`, { params });
+    return this.http.get<CustomerQueryDTO[]>(`${this.apiUrl}/GetAllQueriesByUser`, { params });
   }
   addComment(dto: { queryId: number; comments: string; isStaff: boolean }) {
-  return this.http.post<CustomerQueryDTO>(`${this.base}/AddComment`, dto);
+  return this.http.post<CustomerQueryDTO>(`${this.apiUrl}/AddComment`, dto);
 }
   getAllPendingQueries() {
-    return this.http.get<CustomerQueryDTO[]>(`${this.base}/GetAllPendingQueries`);
+    return this.http.get<CustomerQueryDTO[]>(`${this.apiUrl}/GetAllPendingQueries`);
   }
     markQueryClosed(queryId: number, staffId: number) {
     const params = new HttpParams()
       .set('queryId', String(queryId))
       .set('staffId', String(staffId));
-    return this.http.post(`${this.base}/MarkQueryClosed`, null, { responseType: 'text', params });
+    return this.http.post(`${this.apiUrl}/MarkQueryClosed`, null, { responseType: 'text', params });
   }
 
 }

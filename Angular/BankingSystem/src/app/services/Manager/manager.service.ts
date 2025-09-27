@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IRegister } from '../../../Interfaces/IRegister';
 import { IUser } from '../../../Interfaces/IUser';
+import { environment } from '../../../environments/environment';
 
 export interface AccountActivityDto {
   lastTransactionAt: string | null; 
@@ -25,16 +26,17 @@ export interface UserActivityDto {
 @Injectable({ providedIn: 'root' })
 export class ManagerService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:5139/api/v1/Manager';
+  private BaseUrl = environment.apiUrl;
+  private apiUrl = `${this.BaseUrl}/Manager`;
 
   createStaff(registerDTO: IRegister): Observable<string> {
-    return this.http.post(`${this.base}/create-staff`, registerDTO, { responseType: 'text' });
+    return this.http.post(`${this.apiUrl}/create-staff`, registerDTO, { responseType: 'text' });
   }
 
   getAllStaff(): Observable<IUser[]> {
-    return this.http.get<IUser[]>(`${this.base}/GetAllStaff`); 
+    return this.http.get<IUser[]>(`${this.apiUrl}/GetAllStaff`); 
   }
     getAllUsersActivity(): Observable<UserActivityDto[]> {
-    return this.http.get<UserActivityDto[]>(`${this.base}/GetAllUserActivity`);
+    return this.http.get<UserActivityDto[]>(`${this.apiUrl}/GetAllUserActivity`);
   }
 }

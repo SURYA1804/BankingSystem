@@ -102,8 +102,8 @@ if (useSqlite)
 }
 else
 {
-    builder.Services.AddDbContext<MyAppDbContext, SqlServerDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    builder.Services.AddDbContext<MyAppDbContext, PostgresDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 }
 
 
@@ -128,11 +128,11 @@ builder.Services.AddScoped<ICustomerSupportService, CustomerSupportService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger();
+app.UseSwaggerUI();
+// }
 
 app.UseHttpsRedirection();
 

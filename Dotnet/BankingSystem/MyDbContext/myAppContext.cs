@@ -176,3 +176,12 @@
         public SqliteDbContext(DbContextOptions<SqliteDbContext> options)
             : base(options) { }
     }
+
+public class PostgresDbContext : MyAppDbContext
+{
+    public PostgresDbContext(DbContextOptions<PostgresDbContext> options):base(options)
+    {
+
+    }
+        
+}

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface TransactionDTO {
   transactionId: number;
@@ -29,19 +30,20 @@ export interface MakeTransactionDTO {
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:5139/api/v1/Transcation';
+  private BaseUrl = environment.apiUrl;
+  private apiUrl = `${this.BaseUrl}/Transcation`;
 
   makeTransaction(dto: MakeTransactionDTO): Observable<string> {
-    return this.http.post(`${this.base}/MakeTransaction`, dto, { responseType: 'text' });
+    return this.http.post(`${this.apiUrl}/MakeTransaction`, dto, { responseType: 'text' });
   }
 
   getTransactionsByAccount(accountNumber: number): Observable<TransactionDTO[]> {
     const params = new HttpParams().set('AccountNumber', String(accountNumber));
-    return this.http.get<TransactionDTO[]>(`${this.base}/GetAllTransactionsByAccount`, { params });
+    return this.http.get<TransactionDTO[]>(`${this.apiUrl}/GetAllTransactionsByAccount`, { params });
   }
     getAllToApprove(): Observable<TransactionDTO[]> {
     return this.http.get<TransactionDTO[]>(
-      `${this.base}/GetAllTransactionsToApprove`
+      `${this.apiUrl}/GetAllTransactionsToApprove`
     );
   }
    approveTransaction(transactionId: number, staffId: number, isApproved: boolean,reason:string): Observable<string> {
@@ -50,7 +52,7 @@ export class TransactionService {
       .set('staffId', staffId.toString())
       .set('isApproved', String(isApproved))
       .set('reason', reason ?? 'approved');
-    return this.http.post(`${this.base}/ApproveTransaction`, null, { responseType: 'text', params });
+    return this.http.post(`${this.apiUrl}/ApproveTransaction`, null, { responseType: 'text', params });
   }
 
 }

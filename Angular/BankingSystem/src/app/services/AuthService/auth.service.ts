@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IRegister } from '../../../Interfaces/IRegister';
 import { IUser } from '../../../Interfaces/IUser';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,9 @@ import { IUser } from '../../../Interfaces/IUser';
 export class AuthService {
 
  user: IUser | null = null;
- private apiUrl = 'http://localhost:5139/api/v1/Users'
+  private BaseUrl = environment.apiUrl;
+
+  private apiUrl = `${this.BaseUrl}/Users`
 
   constructor(private http: HttpClient) {this.SetUser()}
 
