@@ -398,3 +398,7 @@ C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Npgsql.dll
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\nlog.config
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\NLog.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\NLog.Extensions.Logging.dll
+C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\NLog.Web.AspNetCore.dll
