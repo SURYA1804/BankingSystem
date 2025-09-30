@@ -13,23 +13,37 @@ using Microsoft.Extensions.Options;
 using System.Runtime.InteropServices.JavaScript;
 using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Service;
 
 public class UserService : IUserService
 {
     private readonly MyAppDbContext context;
+
+    private readonly ILogger<UserService> logger;
     private readonly IMapper mapper;
+<<<<<<< HEAD
+    private readonly EmailService emailService;
+    public UserService(MyAppDbContext context, IMapper mapper, ILogger<UserService> logger, EmailService emailService)
+=======
     private readonly EmailCredentialsDTO emailCredentials;
     private SmtpClient smpt;
-    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions,IMapper mapper)
+    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions,IMapper mapper,ILogger<UserService> logger)
+>>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
     {
         this.context = context;
-        this.emailCredentials = emailOptions.Value;
         this.mapper = mapper;
+        this.logger = logger;
+<<<<<<< HEAD
+        this.emailService = emailService;
+
+=======
         if (string.IsNullOrEmpty(emailCredentials.Email) || string.IsNullOrEmpty(emailCredentials.Password))
         {
-            throw new ArgumentException("EmailCredentials not configured properly in appsettings.json");
+            logger.LogError("EmailCredentials not configured properly in appsettings.json");
         }
         this.smpt = new SmtpClient("smtp.gmail.com")
         {
@@ -37,6 +51,7 @@ public class UserService : IUserService
             Credentials = new NetworkCredential(emailCredentials.Email, emailCredentials.Password),
             EnableSsl = true,
         };
+>>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
     }
     public async Task<UserDTO> LoginAsync(LoginDTO loginDTO)
     {
@@ -56,6 +71,7 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
+            logger.LogError("Error In Login"+ex);
             return null;
         }
 
@@ -120,21 +136,17 @@ public class UserService : IUserService
             string body = template
                 .Replace("{NAME}", registerDTO.Name)
                 .Replace("{OTP}", otp.ToString());
-            var mail = new MailMessage(emailCredentials.Email, registerDTO.Email!)
-            {
-                Subject = "Your Bank OTP Verification",
-                Body = body,
-                IsBodyHtml = true
-            };
+            string Subject = "Your Bank OTP Verification";
 
-
-            await smpt.SendMailAsync(mail);
+            var EmailResult = await emailService.SendMail(registerDTO.Email,body,Subject);
+    
 
             await transaction.CommitAsync();
             return true;
         }
         catch (Exception ex)
         {
+            logger.LogError("Error In Register"+ex);
             await transaction.RollbackAsync();
             return false;
         }
@@ -169,19 +181,16 @@ public class UserService : IUserService
             string body = template
                 .Replace("{NAME}", user.Name)
                 .Replace("{OTP}", otp.ToString());
-            var mail = new MailMessage(emailCredentials.Email, email!)
-            {
-                Subject = "Your Bank OTP Verification",
-                Body = body,
-                IsBodyHtml = true
-            };
-            await smpt.SendMailAsync(mail);
+            string Subject = "Your Bank OTP Verification";
+            var EmailResult = await emailService.SendMail(email,body,Subject);
 
-            return true;
+
+            return EmailResult;
             
         }
         catch (Exception ex)
         {
+            logger.LogError("Error In GetOtp"+ex);
             return false;
         }
 
@@ -193,22 +202,31 @@ public class UserService : IUserService
     }
     public async Task<bool> UpdateUserAsync(int userId, JsonPatchDocument<UsersModel> patchDoc)
     {
-        var user = await GetUserByIdAsync(userId);
-        if (user == null) return false;
-
-        patchDoc.ApplyTo(user);
-        
-        if (patchDoc.Operations.Any(op =>
-        (op.path.Equals("/Password", StringComparison.OrdinalIgnoreCase)
-             || op.path.Equals("Password", StringComparison.OrdinalIgnoreCase))
-                && !string.IsNullOrWhiteSpace(user.Password)))
+        try
         {
-            user.Password = HassPassword.GetHashPassword(user.Password);
+            var user = await GetUserByIdAsync(userId);
+            if (user == null) return false;
+
+            patchDoc.ApplyTo(user);
+
+            if (patchDoc.Operations.Any(op =>
+            (op.path.Equals("/Password", StringComparison.OrdinalIgnoreCase)
+                 || op.path.Equals("Password", StringComparison.OrdinalIgnoreCase))
+                    && !string.IsNullOrWhiteSpace(user.Password)))
+            {
+                user.Password = HassPassword.GetHashPassword(user.Password);
+            }
+
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error In UpdateUser"+ex);
+            return false;
         }
 
-        await context.SaveChangesAsync();
-
-        return true;
     }
     public async Task<bool> CheckPasswordAsync(int userId, string password)
     {
@@ -227,6 +245,7 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
+            logger.LogError("Error In Check Password"+ex);
             return false;
         }
     }
@@ -255,23 +274,39 @@ public class UserService : IUserService
         }
         catch (Exception ex)
         {
+            logger.LogError("Error In Verfiy OTP"+ex);
+
             return "failed";
         }
     }
-   
+
     private async void SendWelcomeMailAsync(UsersModel user)
     {
-        string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
-        string template = File.ReadAllText(templatePath);
-        string body = template.Replace("{Name}", user.Name).Replace("{UserName}",user.UserName).
-        Replace("{LoginUrl}","alterego.bank");
-        var mail = new MailMessage(emailCredentials.Email, user.Email)
+        try
         {
-            Subject = "Welcome To Alter Ego Bank",
-            Body = body,
-            IsBodyHtml = true
-        };
-        await smpt.SendMailAsync(mail);
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
+            string template = File.ReadAllText(templatePath);
+            string body = template.Replace("{Name}", user.Name).Replace("{UserName}", user.UserName).
+            Replace("{LoginUrl}", "alterego.bank");
+<<<<<<< HEAD
+            string Subject = "Welcome To Our Finance System";
+
+            var EmailResult = await emailService.SendMail(user.Email,body,Subject);
+
+=======
+            var mail = new MailMessage(emailCredentials.Email, user.Email)
+            {
+                Subject = "Welcome To Alter Ego Bank",
+                Body = body,
+                IsBodyHtml = true
+            };
+            await smpt.SendMailAsync(mail);
+>>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error In SendWelcomeMail"+ex);
+        }
     }
 
 }
