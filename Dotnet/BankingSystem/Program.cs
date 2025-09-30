@@ -129,22 +129,36 @@ try
     builder.Services.AddScoped<ILoanTypeService, LoanTypeService>();
     builder.Services.AddScoped<ICustomerSupportService, CustomerSupportService>();
 
+    builder.Services.AddScoped<ICustomerTypeService, CustomerTypeService>();
+    builder.Services.AddScoped<IUserRolesService, UserRolesService>();
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<IAccountService, AccountService>();
+    builder.Services.AddScoped<IAccountTypeService, AccountTypeService>();
+    builder.Services.AddScoped<IStaffService, StaffService>();
+    builder.Services.AddScoped<IManagerService, ManagerService>();
+    builder.Services.AddScoped<ITransactionService, TransactionService>();
+    builder.Services.AddScoped<ITransactionTypeService, TransactionTypeService>();
+    builder.Services.AddScoped<ILoanService, LoanService>();
+    builder.Services.AddScoped<ILoanTypeService, LoanTypeService>();
+    builder.Services.AddScoped<ICustomerSupportService, CustomerSupportService>();
+
 
 
 
 
     var app = builder.Build();
 
-    // if (app.Environment.IsDevelopment())
-    // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    // }
-    app.UseMiddleware<ResponseTimeLoggingMiddleware>();
-    app.UseHttpsRedirection();
-    // app.UseStaticFiles();
-    app.UseRouting();
-    app.UseCors("AllowPolicy");
+        // if (app.Environment.IsDevelopment())
+        // {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        // }
+    app.UseMiddleware<ResponseTimeLoggingMiddleware>();    app.UseMiddleware<ResponseTimeLoggingMiddleware>();
+        app.UseHttpsRedirection();
+    //     // app.UseStaticFiles();
+        app.UseRouting();
+        app.UseCors("AllowPolicy");
 
     app.UseAuthentication();
     app.UseAuthorization();

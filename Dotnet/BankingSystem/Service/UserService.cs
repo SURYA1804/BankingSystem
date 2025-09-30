@@ -31,16 +31,10 @@ public class UserService : IUserService
 =======
     private readonly EmailCredentialsDTO emailCredentials;
     private SmtpClient smpt;
-    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions,IMapper mapper,ILogger<UserService> logger)
->>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
+    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions,IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;
-        this.logger = logger;
-<<<<<<< HEAD
-        this.emailService = emailService;
-
-=======
         if (string.IsNullOrEmpty(emailCredentials.Email) || string.IsNullOrEmpty(emailCredentials.Password))
         {
             logger.LogError("EmailCredentials not configured properly in appsettings.json");
@@ -282,31 +276,17 @@ public class UserService : IUserService
 
     private async void SendWelcomeMailAsync(UsersModel user)
     {
-        try
+        string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
+        string template = File.ReadAllText(templatePath);
+        string body = template.Replace("{Name}", user.Name).Replace("{UserName}",user.UserName).
+        Replace("{LoginUrl}","alterego.bank");
+        var mail = new MailMessage(emailCredentials.Email, user.Email)
         {
-            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
-            string template = File.ReadAllText(templatePath);
-            string body = template.Replace("{Name}", user.Name).Replace("{UserName}", user.UserName).
-            Replace("{LoginUrl}", "alterego.bank");
-<<<<<<< HEAD
-            string Subject = "Welcome To Our Finance System";
-
-            var EmailResult = await emailService.SendMail(user.Email,body,Subject);
-
-=======
-            var mail = new MailMessage(emailCredentials.Email, user.Email)
-            {
-                Subject = "Welcome To Alter Ego Bank",
-                Body = body,
-                IsBodyHtml = true
-            };
-            await smpt.SendMailAsync(mail);
->>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
-        }
-        catch (Exception ex)
-        {
-            logger.LogError("Error In SendWelcomeMail"+ex);
-        }
+            Subject = "Welcome To Alter Ego Bank",
+            Body = body,
+            IsBodyHtml = true
+        };
+        await smpt.SendMailAsync(mail);
     }
 
 }

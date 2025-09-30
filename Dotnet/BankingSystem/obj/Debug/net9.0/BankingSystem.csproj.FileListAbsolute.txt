@@ -403,7 +403,10 @@ C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\NLog.Extensions.Logging.dll
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\NLog.Web.AspNetCore.dll
 <<<<<<< HEAD
+<<<<<<< HEAD
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\SendGrid.dll
 C:\Users\surya\LearningCode\BankingSystem\Dotnet\BankingSystem\bin\Debug\net9.0\StarkbankEcdsa.dll
+=======
+>>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
 =======
 >>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
