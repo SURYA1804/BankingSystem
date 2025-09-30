@@ -25,27 +25,14 @@ public class UserService : IUserService
 
     private readonly ILogger<UserService> logger;
     private readonly IMapper mapper;
-<<<<<<< HEAD
     private readonly EmailService emailService;
     public UserService(MyAppDbContext context, IMapper mapper, ILogger<UserService> logger, EmailService emailService)
-=======
-    private readonly EmailCredentialsDTO emailCredentials;
-    private SmtpClient smpt;
-    public UserService(MyAppDbContext context, IOptions<EmailCredentialsDTO> emailOptions,IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;
-        if (string.IsNullOrEmpty(emailCredentials.Email) || string.IsNullOrEmpty(emailCredentials.Password))
-        {
-            logger.LogError("EmailCredentials not configured properly in appsettings.json");
-        }
-        this.smpt = new SmtpClient("smtp.gmail.com")
-        {
-            Port = 587,
-            Credentials = new NetworkCredential(emailCredentials.Email, emailCredentials.Password),
-            EnableSsl = true,
-        };
->>>>>>> dd87f595b09364c2affd09d536f4cc444979ca39
+        this.logger = logger;
+        this.emailService = emailService;
+
     }
     public async Task<UserDTO> LoginAsync(LoginDTO loginDTO)
     {
@@ -276,17 +263,21 @@ public class UserService : IUserService
 
     private async void SendWelcomeMailAsync(UsersModel user)
     {
-        string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
-        string template = File.ReadAllText(templatePath);
-        string body = template.Replace("{Name}", user.Name).Replace("{UserName}",user.UserName).
-        Replace("{LoginUrl}","alterego.bank");
-        var mail = new MailMessage(emailCredentials.Email, user.Email)
+        try
         {
-            Subject = "Welcome To Alter Ego Bank",
-            Body = body,
-            IsBodyHtml = true
-        };
-        await smpt.SendMailAsync(mail);
+            string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "welcome.html");
+            string template = File.ReadAllText(templatePath);
+            string body = template.Replace("{Name}", user.Name).Replace("{UserName}", user.UserName).
+            Replace("{LoginUrl}", "alterego.bank");
+            string Subject = "Welcome To Our Finance System";
+
+            var EmailResult = await emailService.SendMail(user.Email,body,Subject);
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error In SendWelcomeMail"+ex);
+        }
     }
 
 }
